@@ -51,75 +51,6 @@ public class AntColony {
         
     }
 
-    public boolean is_it_better(ArrayList<Integer>[][] solution1 , ArrayList<Integer>[][] solution2) {
-        
-        //Check the number of missions in each solution
-
-        int nb_mission1 = 0;
-        int nb_mission2 = 0;
-
-        for(int i = 0; i < solution1.length; i++) {
-            for(int j = 0; j < solution1[i].length; j++) {
-                nb_mission1 += solution1[i][j].size();
-                nb_mission2 += solution2[i][j].size();
-            }
-        }
-
-        if(nb_mission1 > nb_mission2) {
-            return true;
-        }
-        else if(nb_mission1 < nb_mission2) {
-            return false;
-        }
-        
-        //Check the distance of each solution
-
-        float distance1 = 0;
-        float distance2 = 0;
-
-        for(int i = 0; i < solution1.length; i++) {
-            for(int j = 0; j < solution1[i].length; j++) {
-                for(int k = 0; k < solution1[i][j].size()-1; k++) {
-                    distance1 += sessad.distance[i][solution1[i][j].get(k)][solution1[i][j].get(k)+1];
-                    distance2 += sessad.distance[i][solution2[i][j].get(k)][solution2[i][j].get(k)+1];
-                }
-            }
-        }
-
-        if(distance1 < distance2) {
-            return true;
-        }
-        else if(distance1 > distance2) {
-            return false;
-        }
-
-        //Check the number of mission where the speciality are the same
-
-        int nb_mission_same_speciality1 = 0;
-        int nb_mission_same_speciality2 = 0;
-
-        for(int i = 0; i < solution1.length; i++) {
-            for(int j = 0; j < solution1[i].length; j++) {
-                for(int k = 0; k < solution1[i][j].size(); k++) {
-                    if(sessad.employee[i].specialite == sessad.mission[solution1[i][j].get(k)].specialite) {
-                        nb_mission_same_speciality1++;
-                    }
-                    if(sessad.employee[i].specialite == sessad.mission[solution2[i][j].get(k)].specialite) {
-                        nb_mission_same_speciality2++;
-                    }
-                }
-            }
-        }
-
-        if(nb_mission_same_speciality1 > nb_mission_same_speciality2) {
-            return true;
-        }
-        else{
-            return false;
-        }
-
-    }
-
     public ArrayList<Integer>[][] solve(int teta, float maximum_time){
         initPheromone();
         best_solution = new ArrayList[sessad.employee.length][nb_jour];
@@ -146,7 +77,7 @@ public class AntColony {
                 }
             }
             for(int i = 0; i < nb_ants; i++) {
-                if(is_it_better(ants[i].solution, best_solution)) {
+                if(sessad.is_it_better(ants[i].solution, best_solution)) {
                     best_solution = ants[i].solution;
                     nb_iteration_without_improvement = 0;
                 }

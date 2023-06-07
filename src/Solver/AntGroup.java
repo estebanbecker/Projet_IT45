@@ -9,6 +9,8 @@ public class AntGroup implements Runnable{
     public float pheromone[][][][];
 
     public ArrayList<Integer>[][] solution;
+
+    SESSAD sessad;
     
     /**
      * Creant an Ant group, wich is a groupe of ants where each ant is an employee with his own mission
@@ -21,6 +23,7 @@ public class AntGroup implements Runnable{
      */
     public AntGroup(SESSAD sessad, int nb_ants, float pheromone[][][][], float alpha, float beta, int nb_jour) {
         nb_ants = sessad.employee.length;
+        this.sessad = sessad;
 
         for (int i = 0; i < nb_ants; i++) {
             ants[i] = new Ant(sessad, i, pheromone[i], sessad.employee[i].competence, sessad.employee[i].specialite, 1, 1,nb_jour);
@@ -48,6 +51,9 @@ public class AntGroup implements Runnable{
             solution[ant.id] = ant.mission_done;
         }
 
+        solution = sessad.make_it_valid(solution);
+
     }
+
 
 }
