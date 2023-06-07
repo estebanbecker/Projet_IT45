@@ -79,7 +79,7 @@ public class Ant {
      * @param start_time    The time that the employee started working today
      * @return  The id of the mission that the employee will do next
      */
-    private int chooseMission(int current_mission, float today_working_time, float total_working_time, float start_time, starting_time) {
+    private int chooseMission(int current_mission, float today_working_time, float total_working_time, float starting_time) {
 
         float sum = 0;
         float[] proba = new float[sessad.mission.length];
@@ -101,6 +101,7 @@ public class Ant {
                 }
             }
         }
+        throw new RuntimeException("No mission found");
     }
 
     /**
