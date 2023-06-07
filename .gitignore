@@ -1,1 +1,5 @@
 /.vscode
+bin/App.class
+bin/Problem/Employee.class
+bin/Problem/SESSAD.class
+bin/Problem/Mission.class
