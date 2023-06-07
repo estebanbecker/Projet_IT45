@@ -7,4 +7,5 @@ public class Mission {
     public int end_time;
     public String competence;
     public String specialite;
+    public int day;
 }

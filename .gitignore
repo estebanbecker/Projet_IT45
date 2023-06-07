@@ -3,3 +3,6 @@ bin/App.class
 bin/Problem/Employee.class
 bin/Problem/SESSAD.class
 bin/Problem/Mission.class
+bin/Solver/Ant.class
+bin/Solver/AntColony.class
+bin/Solver/AntGroup.class
