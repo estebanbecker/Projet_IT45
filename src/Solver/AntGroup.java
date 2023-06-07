@@ -10,6 +10,15 @@ public class AntGroup implements Runnable{
 
     public ArrayList<Integer>[][] solution;
     
+    /**
+     * Creant an Ant group, wich is a groupe of ants where each ant is an employee with his own mission
+     * @param sessad    The problem
+     * @param nb_ants   The number of ants
+     * @param pheromone The pheromone matrix
+     * @param alpha    The alpha parameter
+     * @param beta   The beta parameter
+     * @param nb_jour   The number of days
+     */
     public AntGroup(SESSAD sessad, int nb_ants, float pheromone[][][][], float alpha, float beta, int nb_jour) {
         nb_ants = sessad.employee.length;
 
@@ -19,10 +28,17 @@ public class AntGroup implements Runnable{
 
     }
 
+    /**
+     * Set the pheromone matrix
+     * @param pheromone The pheromone matrix
+     */
     public void setPheromone(float pheromone[][][][]) {
         this.pheromone = pheromone;
     }
 
+    /**
+     * Run the ants
+     */
     public void run() {
         for (Ant ant : ants) {
             ant.run();
