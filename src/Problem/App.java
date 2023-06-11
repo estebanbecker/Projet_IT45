@@ -15,6 +15,8 @@ public class App {
         int citiesCount = 30; // Assuming you have the number of cities specified
         distanceMatrix dm = new distanceMatrix(citiesCount);
 
+        SESSAD sessad = new SESSAD();
+
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
             Float[][] distancesArray = new Float[citiesCount+2][citiesCount+2];
             int row = 0;
@@ -84,19 +86,21 @@ public class App {
             System.out.println("Missions for thursday: " + Mission.getMissionIdsForDay(4, Missions));
             System.out.println("Missions for friday: " + Mission.getMissionIdsForDay(5, Missions));
 
-            Float[][][] missionarray = Mission.createMissionIndexArrayByDay(Missions);
+            Integer[][] missionarray = Mission.createMissionIndexArrayByDay(Missions);
 
             System.out.println("\n");
             for (int i = 0; i < 5; i++) {
                 System.out.print(i+1 + "\n");
                 for (int j = 0; j < missionarray[i].length; j++) {
-                    for (int k = 0; k < missionarray[i][j].length; k++) {
-                        System.out.print(missionarray[i][j][k] + "\t");
-                    }
+                        System.out.print(missionarray[i][j] + "\t");
                     System.out.println();
                 }
                 System.out.println();
             }
+
+            sessad.missionPerDay = missionarray;
+
+            sessad.mission = Missions.toArray(new Mission[Missions.size()]);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -117,36 +121,31 @@ public class App {
             }
 
             // Print the employees
-            for (Employee employee : employees) {
-                System.out.println(employee);
-            }
+            sessad.employee = employees.toArray(new Employee[employees.size()]);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         String csvFile4 = "instances/30Missions-2centres/centers.csv";
-        List<SESSAD> SESSADS = new ArrayList<>();
 
+        
 
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile4))) {
 
+            ArrayList<String> centerNames = new ArrayList<String>();
+
             while ((line = br.readLine()) != null) {
                 String[] centerData = line.split(csvSplitBy);
-                SESSAD SESSAD = new SESSAD();
-                //REMOVE BOM IN INTELLIJ
-                //System.out.println(Integer.parseInt(centerData[0].replaceFirst("\uFEFF", "")));
-                SESSAD.setId(Integer.parseInt(centerData[0].replaceFirst("\uFEFF", "")));
-                //center.setId(Integer.parseInt(centerData[0]));
-                SESSAD.setName(centerData[1]);
-                SESSADS.add(SESSAD);
+                centerNames.add(centerData[1]);
             }
 
-            // Print the employees
-            for (SESSAD SESSAD : SESSADS) {
-                System.out.println(SESSAD);
-            }
+            sessad.center_name = centerNames.toArray(new String[centerNames.size()]);
+
+
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        System.out.println("Finished");
     }
 }

@@ -13,16 +13,9 @@ public class SESSAD {
 
     public Employee[] employee;
 
-    private int id;
     public String name;
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
+    public Integer [][] missionPerDay;
 
     public String getName() {
         return name;
