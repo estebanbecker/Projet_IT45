@@ -28,7 +28,6 @@ public class SESSAD {
     @Override
     public String toString() {
         return "Mission{" +
-                "id=" + id +
                 ", name=" + name +
                 '}';
     }
@@ -154,6 +153,10 @@ public class SESSAD {
         }
 
         return newArray;
+    }
+
+    public Integer ConvertADayAndMissionNumberToMissionId(int day, int mission_number) {
+        return this.missionPerDay[day][mission_number];
     }
 
 }

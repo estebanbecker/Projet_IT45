@@ -3,6 +3,7 @@ package Solver;
 import java.util.ArrayList;
 
 import Problem.SESSAD;
+import Problem.distanceMatrix;
 
 public class Ant {
 
@@ -37,6 +38,7 @@ public class Ant {
         this.alpha = alpha;
         this.beta = beta;
         this.center_id = sessad.employee[id].center_id;
+        this.nb_jour = nb_jour;
 
         nb_centres = sessad.center_name.length;
     }
@@ -89,7 +91,7 @@ public class Ant {
         float sum = 0;
         float[] proba = new float[sessad.mission.length];
         
-        for (int i = 0; i < sessad.mission.length + nb_centres; i++) {
+        for (int i = 0; i < sessad.distance[day].length; i++) {
             if(isMissionPossible(current_mission,i , today_working_time, total_working_time , starting_time)) {
                 proba[i] = (float) Math.pow(today_pheromone[center_id][i], alpha) * (float) Math.pow(1 / sessad.distance[day][current_mission][i], beta);
                 sum += proba[i];
@@ -98,7 +100,7 @@ public class Ant {
 
         float rand = (float) Math.random() * sum;
 
-        for (int i = 0; i < sessad.mission.length; i++) {
+        for (int i = 0; i < sessad.distance[day].length; i++) {
             if(isMissionPossible(current_mission,i , today_working_time, total_working_time, starting_time)) {
                 rand -= proba[i];
                 if(rand <= 0) {
@@ -119,13 +121,17 @@ public class Ant {
      * @return  True if the mission is possible to do, false otherwise
      */
     private boolean isMissionPossible(int current_mission, int mission_id, float today_working_time, float total_working_time, float starting_time) {
-        if(sessad.mission[mission_id].competence.equals(competence) && TimeToDoAMission(current_mission, mission_id) + today_working_time <= (8*60) && TimeToDoAMission(current_mission, mission_id) + total_working_time <= (35*60) && (endingTime(current_mission, mission_id) <= starting_time + (13*60) || starting_time == -1) && sessad.mission[current_mission].start_time + sessad.distance[day][current_mission][mission_id]/(50*3.6) <= sessad.mission[mission_id].start_time && current_mission != mission_id && mission_id >= nb_centres) {
+
+        if(mission_id == center_id) {
             return true;
-        }else if(mission_id == center_id) {
-            return true;
-        }else {
+        }else if(mission_id >= nb_centres) {
             return false;
         }
+
+        int current_mission_day = sessad.ConvertADayAndMissionNumberToMissionId(day, current_mission-sessad.center_name.length);
+        int mission_id_day = sessad.ConvertADayAndMissionNumberToMissionId(day, mission_id-sessad.center_name.length);
+
+        
     }
 
     /**
@@ -135,7 +141,8 @@ public class Ant {
      * @return  The time to do the mission and return to the center
      */
     private float TimeToDoAMission( int current_mission,int mission_id) {
-        return (float) (sessad.mission[mission_id].end_time - sessad.mission[mission_id].start_time + sessad.distance[day][current_mission][mission_id]/(50*3.6)+sessad.distance[day][mission_id][center_id]/(50*3.6));
+        int mission_id_day = sessad.ConvertADayAndMissionNumberToMissionId(day, mission_id-sessad.center_name.length);
+        return (float) (sessad.mission[mission_id_day].end_time - sessad.mission[mission_id_day].start_time + sessad.distance[day][current_mission][mission_id]/(50*3.6)+sessad.distance[day][mission_id][center_id]/(50*3.6));
     }
 
     /**
@@ -145,6 +152,7 @@ public class Ant {
      * @return  The ending time of the mission and return to the center
      */
     private float endingTime(int current_mission, int mission_id) {
-        return (float) (sessad.mission[mission_id].end_time + sessad.distance[day][mission_id][center_id]/(50*3.6));
+        int mission_id_day = sessad.ConvertADayAndMissionNumberToMissionId(day, mission_id-sessad.center_name.length);
+        return (float) (sessad.mission[mission_id_day].end_time + sessad.distance[day][mission_id][center_id]/(50*3.6));
     }
 }

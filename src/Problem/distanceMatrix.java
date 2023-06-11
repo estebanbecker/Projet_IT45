@@ -4,7 +4,7 @@ public class distanceMatrix{
     private Float[][] distances;
 
     public distanceMatrix(int citiesCount) {
-        this.distances = new Float[citiesCount+2][citiesCount+2];
+        this.distances = new Float[citiesCount][citiesCount];
     }
 
     public double getDistances(int missionId, int centerId) {

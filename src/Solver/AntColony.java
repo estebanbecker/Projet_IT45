@@ -38,7 +38,6 @@ public class AntColony {
                 nb_jour = sessad.mission[i].day;
             }
         }
-        nb_jour++;
 
         nb_mission_par_jour = new int[nb_jour];
 
@@ -62,6 +61,9 @@ public class AntColony {
         long current_mission_time = System.currentTimeMillis();
         int nb_iteration_without_improvement = 0;
         Thread[] threads = new Thread[nb_ants];
+
+        ants = new AntGroup[nb_ants];
+        
         while(System.currentTimeMillis() - current_mission_time < maximum_time && nb_iteration_without_improvement < teta) {
             for(int i = 0; i < nb_ants; i++) {
                 ants[i] = new AntGroup(sessad, i, pheromone, alpha, beta,nb_jour);
@@ -80,6 +82,8 @@ public class AntColony {
                 if(sessad.is_it_better(ants[i].solution, best_solution)) {
                     best_solution = ants[i].solution;
                     nb_iteration_without_improvement = 0;
+                }else{
+                    nb_iteration_without_improvement++;
                 }
             }
         }
