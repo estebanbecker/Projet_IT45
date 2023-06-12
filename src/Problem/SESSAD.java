@@ -124,11 +124,8 @@ public class SESSAD {
                 for (int k = 0; k < solution[i].length; k++) {
                     for(int l = 0; l < solution[i][k].size(); l++){
                         for(int m = 0; m < solution[j][k].size(); m++){
-                            while(solution[i][k].get(l) == solution[j][k].get(m)){
-                                if(solution[i][k].get(l) > this.center_name.length && (i != j || l != m)){
-                                    solution = repair(solution, i, j, k, l, m);
-
-                                }
+                            while(solution[i][k].get(l) == solution[j][k].get(m) && solution[i][k].get(l) > this.center_name.length && (i != j || l != m)){
+                                solution = repair(solution, i, j, k, l, m);
                             }
                         }
                         

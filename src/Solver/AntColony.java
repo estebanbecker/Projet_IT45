@@ -179,7 +179,7 @@ public class AntColony {
 
     }
 
-    public void ubpdatePheromone() {
+    public void updatePheromone() {
         for(int i = 0; i < nb_jour; i++) {
             for(int j = 0; j < sessad.employee.length; j++) {
                 for(int k = 0; k < pheromone[i][j].length; k++) {
