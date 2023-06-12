@@ -135,7 +135,7 @@ public class AntColony {
         for(int i = 0; i < solution.length; i++) {
             for(int j = 0; j < solution[i].length; j++) {
                 for(int k = 0; k < solution[i][j].size()-1; k++) {
-                    distance += sessad.distance[i][solution[i][j].get(k)][solution[i][j].get(k)+1];
+                    distance += sessad.distance[i][solution[i][j].get(k)][solution[i][j].get(k+1)];
                 }
             }
         }

@@ -60,8 +60,8 @@ public class SESSAD {
         for (int i = 0; i < solution1.length; i++) {
             for (int j = 0; j < solution1[i].length; j++) {
                 for (int k = 0; k < solution1[i][j].size() - 1; k++) {
-                    distance1 += this.distance[i][solution1[i][j].get(k)][solution1[i][j].get(k) + 1];
-                    distance2 += this.distance[i][solution2[i][j].get(k)][solution2[i][j].get(k) + 1];
+                    distance1 += this.distance[i][solution1[i][j].get(k)][solution1[i][j].get(k + 1)];
+                    distance2 += this.distance[i][solution2[i][j].get(k)][solution2[i][j].get(k + 1)];
                 }
             }
         }
@@ -105,11 +105,13 @@ public class SESSAD {
                 for (int k = 0; k < solution[i][j].size(); k++) {
                     for (int l = j + 1; l < solution[i].length; l++) {
                         for (int m = k + 1; m < solution[i][l].size(); m++) {
-                            if (solution[i][j].get(k) == solution[i][l].get(m) && solution[i][j].get(k) != -1
-                                    && solution[i][l].get(k) >= this.center_name.length) {
-                                solution = repair(solution, i, j, k);
-                                m -= 1;
-                                k -= 1;
+                            if(solution[i][j].get(k) > center_name.length && solution[i][l].get(m) > center_name.length)
+                            {
+                                if (solution[i][j].get(k) == solution[i][l].get(m) && solution[i][j].get(k) != -1
+                                        && solution[i][l].get(k) >= this.center_name.length) {
+                                    solution = repair(solution, i, j, k);
+                                    m -= 1;
+                                }
                             }
                         }
                     }
@@ -156,7 +158,7 @@ public class SESSAD {
     }
 
     public Integer ConvertADayAndMissionNumberToMissionId(int day, int mission_number) {
-        return this.missionPerDay[day][mission_number];
+        return this.missionPerDay[day][mission_number]-1;
     }
 
 }

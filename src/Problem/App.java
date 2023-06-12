@@ -159,15 +159,6 @@ public class App {
         
         System.out.println("Finished solving");
 
-        for (int i = 0; i < 5; i++) {
-            System.out.println("Day " + (i+1));
-            for (int j = 0; j < solution[i].length; j++) {
-                System.out.println("Ant " + (j+1));
-                for (int k = 0; k < solution[i][j].size(); k++) {
-                    System.out.print(solution[i][j].get(k) + " ");
-                }
-                System.out.println();
-            }
-        }
+        
     }
 }
