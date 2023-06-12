@@ -73,9 +73,16 @@ public class Ant {
                 }else if(first_mission){
                     starting_time = (float) (sessad.mission[current_mission].start_time-sessad.distance[day][center_id][current_mission]/(SPEED));
                 }
+
+                if(current_mission == center_id) {
+                    today_working_time += sessad.distance[day][mission_done[day].get(mission_done[day].size() - 1)][current_mission]/(SPEED);
+                    total_working_time += sessad.distance[day][mission_done[day].get(mission_done[day].size() - 1)][current_mission]/(SPEED);
+                }else{
+                    int total_current_mission = sessad.ConvertADayAndMissionNumberToMissionId(day, current_mission - sessad.center_name.length);
+                    today_working_time += sessad.distance[day][mission_done[day].get(mission_done[day].size() - 1)][current_mission]/(SPEED)+sessad.mission[total_current_mission].end_time-sessad.mission[total_current_mission].start_time;
+                    total_working_time += sessad.distance[day][mission_done[day].get(mission_done[day].size() - 1)][current_mission]/(SPEED)+sessad.mission[total_current_mission].end_time-sessad.mission[total_current_mission].start_time;
+                }
                 
-                today_working_time += sessad.distance[day][mission_done[day].get(mission_done[day].size() - 1)][current_mission]/(SPEED)+sessad.mission[current_mission].end_time-sessad.mission[current_mission].start_time;
-                total_working_time += sessad.distance[day][mission_done[day].get(mission_done[day].size() - 1)][current_mission]/(SPEED)+sessad.mission[current_mission].end_time-sessad.mission[current_mission].start_time;
                 
                 mission_done[day].add(current_mission);
                 
