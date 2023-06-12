@@ -60,8 +60,10 @@ public class SESSAD {
         for (int i = 0; i < solution1.length; i++) {
             for (int j = 0; j < solution1[i].length; j++) {
                 for (int k = 0; k < solution1[i][j].size() - 1; k++) {
-                    distance1 += this.distance[i][solution1[i][j].get(k)][solution1[i][j].get(k + 1)];
-                    distance2 += this.distance[i][solution2[i][j].get(k)][solution2[i][j].get(k + 1)];
+                    distance1 += this.distance[j][solution1[i][j].get(k)][solution1[i][j].get(k + 1)];
+                }
+                for (int k = 0; k < solution2[i][j].size() - 1; k++) {
+                    distance2 += this.distance[j][solution2[i][j].get(k)][solution2[i][j].get(k + 1)];
                 }
             }
         }

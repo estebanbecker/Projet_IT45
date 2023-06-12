@@ -11,12 +11,14 @@ import Solver.AntColony;
 
 public class App {
     public static void main(String[] args) {
-        String csvFile = "instances/30Missions-2centres/distances.csv";
+
+        String folder = "instances/30Missions-2centres/";
+        String csvFile = folder + "distances.csv";
         String line;
         String csvSplitBy = ",";
         SESSAD sessad = new SESSAD();
 
-        String csvFile2 = "instances/30Missions-2centres/Missions.csv";
+        String csvFile2 = folder + "Missions.csv";
         List<Mission> Missions = new ArrayList<>();
         Map<Integer, String> dayMapping = new HashMap<>();
         dayMapping.put(1, "Monday");
@@ -65,7 +67,7 @@ public class App {
             e.printStackTrace();
         }
 
-        String csvFile3 = "instances/30Missions-2centres/Employees.csv";
+        String csvFile3 = folder + "Employees.csv";
         List<Employee> employees = new ArrayList<>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile3))) {
@@ -85,7 +87,7 @@ public class App {
             e.printStackTrace();
         }
 
-        String csvFile4 = "instances/30Missions-2centres/centers.csv";
+        String csvFile4 = folder + "centres.csv";
 
         
 
@@ -151,11 +153,11 @@ public class App {
 
         System.out.println("Finished loading data");
 
-        AntColony antColony = new AntColony(sessad,10,1,1,1);
+        AntColony antColony = new AntColony(sessad,50,0.5f,1,1);
 
         System.out.println("Starting to solve");
 
-        ArrayList<Integer>[][] solution = antColony.solve(50, 60000);
+        ArrayList<Integer>[][] solution = antColony.solve(1000, 60000);
         
         System.out.println("Finished solving");
 

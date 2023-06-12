@@ -3,18 +3,13 @@ package Solver;
 import java.util.ArrayList;
 
 import Problem.SESSAD;
-import Problem.distanceMatrix;
-
-
-
-
-
 
 public class Ant {
 
     final int MAX_WORKING_TIME_PER_DAY = 7 * 60;
     final int MAX_WORKING_TIME_PER_WEEK = 35 * 60;
     final int MAX_RANGE_WORKING_TIME_PER_DAY = 13 * 60;
+    final int SPEED = 50/60;
 
     public SESSAD sessad;
 
@@ -36,6 +31,8 @@ public class Ant {
 
     public ArrayList<Integer>[] mission_done;
     private int nb_jour;
+
+    public float total_working_time;
 
 
     public Ant(SESSAD sessad, int id, float pheromone[][][], String competence, String specialite, float alpha, float beta, int nb_jour) {
@@ -59,7 +56,7 @@ public class Ant {
             mission_done[i] = new ArrayList<Integer>();
         }
 
-        float total_working_time = 0;
+        total_working_time = 0;
 
         for(day = 0; day < nb_jour; day++) {
             float today_working_time = 0;
@@ -70,14 +67,14 @@ public class Ant {
             mission_done[day].add(center_id);
             do{
                 
-                current_mission = chooseMission(current_mission, today_working_time, total_working_time, starting_time, pheromone[id]);
+                current_mission = chooseMission(current_mission, today_working_time, total_working_time, starting_time, pheromone[day]);
                 if(current_mission == -1) {
                     break;
                 }else if(first_mission){
-                    starting_time = (float) (sessad.mission[current_mission].start_time-sessad.distance[day][center_id][current_mission]/(50*3.6));
+                    starting_time = (float) (sessad.mission[current_mission].start_time-sessad.distance[day][center_id][current_mission]/(SPEED));
                 }
-                today_working_time += sessad.distance[day][current_mission][current_mission]/(50*3.6)+sessad.mission[current_mission].end_time-sessad.mission[current_mission].start_time;
-                total_working_time += sessad.distance[day][current_mission][current_mission]/(50*3.6)+sessad.mission[current_mission].end_time-sessad.mission[current_mission].start_time;
+                today_working_time += sessad.distance[day][current_mission][current_mission]/(SPEED)+sessad.mission[current_mission].end_time-sessad.mission[current_mission].start_time;
+                total_working_time += sessad.distance[day][current_mission][current_mission]/(SPEED)+sessad.mission[current_mission].end_time-sessad.mission[current_mission].start_time;
                 mission_done[day].add(current_mission);
                 
                 
@@ -106,9 +103,13 @@ public class Ant {
         
         for (int i = 0; i < sessad.distance[day].length; i++) {
             if(isMissionPossible(current_mission,i , today_working_time, total_working_time , starting_time)) {
-                proba[i] = (float) Math.pow(today_pheromone[center_id][i], alpha) * (float) Math.pow(1 / sessad.distance[day][current_mission][i], beta);
-                if(proba[i] == Double.POSITIVE_INFINITY) {
-                    proba[i] = Float.MAX_VALUE;
+                if(center_id == i) {
+                    proba[i] = 0.1f;
+                }else {
+                    proba[i] = (float) Math.pow(today_pheromone[current_mission][i], alpha) * (float) Math.pow(1 / sessad.distance[day][current_mission][i], beta);
+                    if(proba[i] == Double.POSITIVE_INFINITY) {
+                        proba[i] = Float.MAX_VALUE;
+                    }
                 }
                 sum += proba[i];
             }
@@ -141,10 +142,10 @@ public class Ant {
      */
     private boolean isMissionPossible(int current_mission, int mission_id, float today_working_time, float total_working_time, float starting_time) {
 
-        if(mission_id == current_mission){
-            return false;
-        }else if(mission_id == center_id) {
+        if(mission_id == center_id){
             return true;
+        }else if(mission_id == current_mission) {
+            return false;
         }else if(mission_id <= nb_centres) {
             return false;
         }
@@ -184,7 +185,7 @@ public class Ant {
      */
     private float TimeToDoAMission( int current_mission,int mission_id) {
         int mission_id_day = sessad.ConvertADayAndMissionNumberToMissionId(day, mission_id-sessad.center_name.length);
-        return (float) (sessad.mission[mission_id_day].end_time - sessad.mission[mission_id_day].start_time + sessad.distance[day][current_mission][mission_id]/(50*3.6)+sessad.distance[day][mission_id][center_id]/(50*3.6));
+        return (float) (sessad.mission[mission_id_day].end_time - sessad.mission[mission_id_day].start_time + sessad.distance[day][current_mission][mission_id]/(SPEED)+sessad.distance[day][mission_id][center_id]/(SPEED));
     }
 
     /**
@@ -195,7 +196,7 @@ public class Ant {
      */
     private float endingTime(int current_mission, int mission_id) {
         int mission_id_day = sessad.ConvertADayAndMissionNumberToMissionId(day, mission_id-sessad.center_name.length);
-        return (float) (sessad.mission[mission_id_day].end_time + sessad.distance[day][mission_id][center_id]/(50*3.6));
+        return (float) (sessad.mission[mission_id_day].end_time + sessad.distance[day][mission_id][center_id]/(SPEED));
     }
 }
 

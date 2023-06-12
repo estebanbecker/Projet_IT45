@@ -63,6 +63,8 @@ public class AntColony {
         Thread[] threads = new Thread[nb_ants];
 
         ants = new AntGroup[nb_ants];
+
+        AntGroup best_ant = new AntGroup(sessad, nb_iteration_without_improvement, pheromone, current_mission_time, teta, nb_iteration_without_improvement);
         
         while(System.currentTimeMillis() - current_mission_time < maximum_time && nb_iteration_without_improvement < teta) {
             for(int i = 0; i < nb_ants; i++) {
@@ -81,6 +83,7 @@ public class AntColony {
             for(int i = 0; i < nb_ants; i++) {
                 if(sessad.is_it_better(ants[i].solution, best_solution)) {
                     best_solution = ants[i].solution;
+                    best_ant = ants[i];
                     nb_iteration_without_improvement = 0;
                 }else{
                     nb_iteration_without_improvement++;
@@ -88,15 +91,22 @@ public class AntColony {
             }
         }
         printSolution(best_solution);
+
+        System.out.println("Working time");
+
+        for(int i = 0; i<best_ant.ants.length; i++) {
+            System.out.println("Ant " + i + " : " + best_ant.ants[i].total_working_time);
+        }
+
         return best_solution;
     }
 
     public void initPheromone() {
-        pheromone = new float[nb_jour][sessad.employee.length][][];
+        pheromone = new float[sessad.employee.length][nb_jour][][];
 
-        for(int i = 0; i < nb_jour; i++) {
-            for(int j = 0; j < sessad.employee.length; j++) {
-                int nb_possible_mission = nb_mission_par_jour[i] + sessad.center_name.length;
+        for(int i = 0; i < sessad.employee.length; i++) {
+            for(int j = 0; j < nb_jour ; j++) {
+                int nb_possible_mission = nb_mission_par_jour[j] + sessad.center_name.length;
                 pheromone[i][j] = new float[nb_possible_mission][];
                 for(int k = 0; k < nb_possible_mission; k++) {
                     pheromone[i][j][k] = new float[nb_possible_mission];
@@ -110,14 +120,14 @@ public class AntColony {
 
     public void printSolution(ArrayList<Integer>[][] solution) {
         for(int i = 0; i < solution.length; i++) {
-            int offset = 0;
             for(int j = 0; j < solution[i].length; j++) {
 
                 for(int k = 0; k < solution[i][j].size(); k++) {
-                    int current_mission = solution[i][j].get(k)-2 + offset;
-                    System.out.println("Employee : " + i + " Day : " + j + " Mission : " + current_mission);
+                    if(solution[i][j].get(k) != sessad.employee[i].center_id) {
+                        int current_mission = sessad.ConvertADayAndMissionNumberToMissionId(j, solution[i][j].get(k) - sessad.center_name.length);
+                        System.out.println("Employee : " + i + " Day : " + j + " Mission : " + current_mission);
+                    }
                 }
-                offset += nb_mission_par_jour[j];
             }
         }
 
@@ -125,7 +135,11 @@ public class AntColony {
         int nb_mission = 0;
         for(int i = 0; i < solution.length; i++) {
             for(int j = 0; j < solution[i].length; j++) {
-                nb_mission += solution[i][j].size();
+                for(int k = 0; k < solution[i][j].size(); k++) {
+                    if(solution[i][j].get(k) != sessad.employee[i].center_id) {
+                        nb_mission++;
+                    }
+                }
             }
         }
         System.out.println("Number of mission : " + nb_mission);
@@ -135,7 +149,7 @@ public class AntColony {
         for(int i = 0; i < solution.length; i++) {
             for(int j = 0; j < solution[i].length; j++) {
                 for(int k = 0; k < solution[i][j].size()-1; k++) {
-                    distance += sessad.distance[i][solution[i][j].get(k)][solution[i][j].get(k+1)];
+                    distance += sessad.distance[j][solution[i][j].get(k)][solution[i][j].get(k+1)];
                 }
             }
         }
