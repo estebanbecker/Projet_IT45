@@ -153,11 +153,11 @@ public class App {
 
         System.out.println("Finished loading data");
 
-        AntColony antColony = new AntColony(sessad,50,0.5f,1,1);
+        AntColony antColony = new AntColony(sessad,1,0.5f,1,1);
 
         System.out.println("Starting to solve");
 
-        ArrayList<Integer>[][] solution = antColony.solve(1000, 60000);
+        ArrayList<Integer>[][] solution = antColony.solve(5, 60000);
         
         System.out.println("Finished solving");
 

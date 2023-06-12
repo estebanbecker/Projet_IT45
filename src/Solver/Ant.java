@@ -9,7 +9,7 @@ public class Ant {
     final int MAX_WORKING_TIME_PER_DAY = 7 * 60;
     final int MAX_WORKING_TIME_PER_WEEK = 35 * 60;
     final int MAX_RANGE_WORKING_TIME_PER_DAY = 13 * 60;
-    final int SPEED = 50/60;
+    final float SPEED = 50.0f/60.0f;
 
     public SESSAD sessad;
 
@@ -73,8 +73,10 @@ public class Ant {
                 }else if(first_mission){
                     starting_time = (float) (sessad.mission[current_mission].start_time-sessad.distance[day][center_id][current_mission]/(SPEED));
                 }
-                today_working_time += sessad.distance[day][current_mission][current_mission]/(SPEED)+sessad.mission[current_mission].end_time-sessad.mission[current_mission].start_time;
-                total_working_time += sessad.distance[day][current_mission][current_mission]/(SPEED)+sessad.mission[current_mission].end_time-sessad.mission[current_mission].start_time;
+                
+                today_working_time += sessad.distance[day][mission_done[day].get(mission_done[day].size() - 1)][current_mission]/(SPEED)+sessad.mission[current_mission].end_time-sessad.mission[current_mission].start_time;
+                total_working_time += sessad.distance[day][mission_done[day].get(mission_done[day].size() - 1)][current_mission]/(SPEED)+sessad.mission[current_mission].end_time-sessad.mission[current_mission].start_time;
+                
                 mission_done[day].add(current_mission);
                 
                 
