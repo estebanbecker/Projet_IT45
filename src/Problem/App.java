@@ -12,7 +12,7 @@ import Solver.AntColony;
 public class App {
     public static void main(String[] args) {
 
-        String folder = "instances/200Missions-2centres/";
+        String folder = "instances/30Missions-2centres/";
         String csvFile = folder + "distances.csv";
         String line;
         String csvSplitBy = ",";
@@ -153,14 +153,14 @@ public class App {
 
         System.out.println("Finished loading data");
 
-        AntColony antColony = new AntColony(sessad,1000,1,1,0.2f);
+        AntColony antColony = new AntColony(sessad,10,1,1,0.2f);
 
         System.out.println("Starting to solve");
 
         //starting a timer
         long startTime = System.currentTimeMillis();
 
-        ArrayList<Integer>[][] solution = antColony.solve(1000, 60000);
+        ArrayList<Integer>[][] solution = antColony.solve(100, 60);
 
         //convert timer to seconds
         long elapsedTime = System.currentTimeMillis() - startTime;
