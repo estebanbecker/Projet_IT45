@@ -82,12 +82,29 @@ public class SESSAD {
         for (int i = 0; i < solution1.length; i++) {
             for (int j = 0; j < solution1[i].length; j++) {
                 for (int k = 0; k < solution1[i][j].size(); k++) {
-                    if (this.employee[i].specialite == this.mission[solution1[i][j].get(k)].specialite) {
-                        nb_mission_same_speciality1++;
+                    
+                    if(solution1[i][j].get(k) >= this.center_name.length){
+                        int mission_id1 = ConvertADayAndMissionNumberToMissionId(j, solution1[i][j].get(k) - this.center_name.length);
+                        if (this.employee[i].specialite == this.mission[mission_id1].specialite) {
+                            nb_mission_same_speciality1++;
+                        }
                     }
-                    if (this.employee[i].specialite == this.mission[solution2[i][j].get(k)].specialite) {
-                        nb_mission_same_speciality2++;
+
+                }
+            }
+        }
+
+        for(int i = 0; i < solution2.length; i++){
+            for(int j = 0; j < solution2[i].length; j++){
+                for(int k = 0; k < solution2[i][j].size(); k++){
+                    
+                    if(solution2[i][j].get(k) >= this.center_name.length){
+                        int mission_id2 = ConvertADayAndMissionNumberToMissionId(j, solution2[i][j].get(k) - this.center_name.length);
+                        if(this.employee[i].specialite == this.mission[mission_id2].specialite){
+                            nb_mission_same_speciality2++;
+                        }
                     }
+
                 }
             }
         }
@@ -103,19 +120,18 @@ public class SESSAD {
     public ArrayList<Integer>[][] make_it_valid(ArrayList<Integer>[][] solution) {
         // Check that each mission is done maximum one time
         for (int i = 0; i < solution.length; i++) {
-            for (int j = 0; j < solution[i].length; j++) {
-                for (int k = 0; k < solution[i][j].size(); k++) {
-                    for (int l = j + 1; l < solution[i].length; l++) {
-                        for (int m = k + 1; m < solution[i][l].size(); m++) {
-                            if(solution[i][j].get(k) > center_name.length && solution[i][l].get(m) > center_name.length)
-                            {
-                                if (solution[i][j].get(k) == solution[i][l].get(m) && solution[i][j].get(k) != -1
-                                        && solution[i][l].get(k) >= this.center_name.length) {
-                                    solution = repair(solution, i, j, k);
-                                    m -= 1;
+            for (int j = 0; j < solution.length; j++) {
+                for (int k = 0; k < solution[i].length; k++) {
+                    for(int l = 0; l < solution[i][k].size(); l++){
+                        for(int m = 0; m < solution[j][k].size(); m++){
+                            while(solution[i][k].get(l) == solution[j][k].get(m)){
+                                if(solution[i][k].get(l) > this.center_name.length && (i != j || l != m)){
+                                    solution = repair(solution, i, j, k, l, m);
+
                                 }
                             }
                         }
+                        
                     }
                 }
             }
@@ -123,17 +139,17 @@ public class SESSAD {
         return solution;
     }
 
-    public ArrayList<Integer>[][] repair(ArrayList<Integer>[][] solution, int i, int j, int k) {
+    public ArrayList<Integer>[][] repair(ArrayList<Integer>[][] solution, int i1, int i2, int j, int k1, int k2) {
 
         // make two deep copies of the solution
         ArrayList<Integer>[][] solution1 = deepcopy(solution);
         ArrayList<Integer>[][] solution2 = deepcopy(solution);
 
         // remove the mission from the first solution
-        solution1[i][j].remove(k);
+        solution1[i1][j].remove(k1);
 
         // remove the mission from the second solution
-        solution2[i][j].remove(k);
+        solution2[i2][j].remove(k2);
 
         // compare the two solutions
         if (is_it_better(solution1, solution2)) {

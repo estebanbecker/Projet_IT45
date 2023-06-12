@@ -165,11 +165,11 @@ public class AntColony {
         for(int i = 0; i < solution.length; i++) {
             for(int j = 0; j < solution[i].length; j++) {
                 for(int k = 0; k < solution[i][j].size(); k++) {
-                    if(sessad.employee[i].specialite.equals(sessad.mission[solution[i][j].get(k)].specialite)) {
-                        System.out.println("---spécialité commune----");
-                        System.out.println(sessad.mission[solution[i][j].get(k)].specialite);
-                        System.out.println(sessad.employee[i].specialite);
-                        nb_mission_same_speciality++;
+                    if(solution[i][j].get(k) != sessad.employee[i].center_id){
+                        int mission_id = sessad.ConvertADayAndMissionNumberToMissionId(j, solution[i][j].get(k) - sessad.center_name.length);
+                        if(sessad.employee[i].specialite.equals(sessad.mission[mission_id].specialite)) {
+                            nb_mission_same_speciality++;
+                        }
                     }
                 }
             }
@@ -245,7 +245,9 @@ public class AntColony {
                             if(next_mission != -1) {
                                 distance[i][j][current_mission][next_mission] += sessad.distance[i][current_mission][next_mission];
                                 nb_mission[i][j][current_mission][next_mission] += 1;
-                                if(sessad.employee[i].specialite.equals(sessad.mission[current_mission].specialite)) {
+                                int mission_id = sessad.ConvertADayAndMissionNumberToMissionId(j,current_mission);
+                                
+                                if(sessad.employee[i].specialite.equals(sessad.mission[mission_id].specialite)) {
                                     nb_mission_same_speciality[i][j][current_mission][next_mission] += 1;
                                 }
                             }

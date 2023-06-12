@@ -153,13 +153,20 @@ public class App {
 
         System.out.println("Finished loading data");
 
-        AntColony antColony = new AntColony(sessad,100,0.5f,1,1);
+        AntColony antColony = new AntColony(sessad,50,1,1,1);
 
         System.out.println("Starting to solve");
 
+        //starting a timer
+        long startTime = System.currentTimeMillis();
+
         ArrayList<Integer>[][] solution = antColony.solve(100, 60000);
+
+        //convert timer to seconds
+        long elapsedTime = System.currentTimeMillis() - startTime;
+        float elapsedTimeSec = elapsedTime / 1000F;
         
-        System.out.println("Finished solving");
+        System.out.println("Finished solving in " + elapsedTimeSec + " seconds");
 
         
     }
