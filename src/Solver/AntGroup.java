@@ -6,7 +6,7 @@ import Problem.SESSAD;
 public class AntGroup implements Runnable{
     
     public Ant[] ants;
-    public float pheromone[][][][];
+    public float pheromone[][][];
 
     public ArrayList<Integer>[][] solution;
 
@@ -23,7 +23,7 @@ public class AntGroup implements Runnable{
      * @param beta   The beta parameter
      * @param nb_jour   The number of days
      */
-    public AntGroup(SESSAD sessad, int nb_ants, float pheromone[][][][], float alpha, float beta, int nb_jour) {
+    public AntGroup(SESSAD sessad, int nb_ants, float pheromone[][][], float alpha, float beta, int nb_jour) {
         
         this.nb_jour = nb_jour;
         nb_ants = sessad.employee.length;
@@ -32,7 +32,7 @@ public class AntGroup implements Runnable{
         ants = new Ant[nb_ants];
 
         for (int i = 0; i < nb_ants; i++) {
-            ants[i] = new Ant(sessad, i, pheromone[i], sessad.employee[i].competence, sessad.employee[i].specialite, alpha, beta,nb_jour);
+            ants[i] = new Ant(sessad, i, pheromone, sessad.employee[i].competence, sessad.employee[i].specialite, alpha, beta,nb_jour);
         }
 
     }
@@ -41,7 +41,7 @@ public class AntGroup implements Runnable{
      * Set the pheromone matrix
      * @param pheromone The pheromone matrix
      */
-    public void setPheromone(float pheromone[][][][]) {
+    public void setPheromone(float pheromone[][][]) {
         this.pheromone = pheromone;
     }
 

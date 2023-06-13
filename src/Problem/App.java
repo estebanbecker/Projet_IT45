@@ -20,7 +20,7 @@ public class App {
     public static float elapsedTimeSec;
     public static void main(String[] args) {
 
-        folder = "instances/66Missions-2centres/";
+        folder = "instances/200Missions-2centres/";
         String csvFile = folder + "distances.csv";
         String line;
         String csvSplitBy = ",";

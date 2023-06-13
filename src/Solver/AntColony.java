@@ -15,7 +15,7 @@ public class AntColony {
 
     private AntGroup[] ants;
 
-    private float pheromone[][][][];
+    private float pheromone[][][];
 
     private ArrayList<Integer>[][] best_solution;
 
@@ -115,17 +115,15 @@ public class AntColony {
     }
 
     public void initPheromone() {
-        pheromone = new float[sessad.employee.length][nb_jour][][];
+        pheromone = new float[nb_jour][][];
 
-        for(int i = 0; i < sessad.employee.length; i++) {
-            for(int j = 0; j < nb_jour ; j++) {
-                int nb_possible_mission = nb_mission_par_jour[j] + sessad.center_name.length;
-                pheromone[i][j] = new float[nb_possible_mission][];
-                for(int k = 0; k < nb_possible_mission; k++) {
-                    pheromone[i][j][k] = new float[nb_possible_mission];
-                    for(int l = 0; l < nb_possible_mission; l++) {
-                        pheromone[i][j][k][l] = 1;
-                    }
+        for(int j = 0; j < nb_jour ; j++) {
+            int nb_possible_mission = nb_mission_par_jour[j] + sessad.center_name.length;
+            pheromone[j] = new float[nb_possible_mission][];
+            for(int k = 0; k < nb_possible_mission; k++) {
+                pheromone[j][k] = new float[nb_possible_mission];
+                for(int l = 0; l < nb_possible_mission; l++) {
+                    pheromone[j][k][l] = 1;
                 }
             }
         }
@@ -207,13 +205,11 @@ public class AntColony {
     }
 
     public void updatePheromone() {
-        for (int i = 0; i < sessad.employee.length; i++) {
-            for (int j = 0; j < nb_jour; j++) {
-                int nb_possible_mission = nb_mission_par_jour[j] + sessad.center_name.length;
-                for (int k = 0; k < nb_possible_mission; k++) {
-                    for (int l = 0; l < nb_possible_mission; l++) {
-                        pheromone[i][j][k][l] = (1 - rho) * pheromone[i][j][k][l];
-                    }
+        for (int j = 0; j < nb_jour; j++) {
+            int nb_possible_mission = nb_mission_par_jour[j] + sessad.center_name.length;
+            for (int k = 0; k < nb_possible_mission; k++) {
+                for (int l = 0; l < nb_possible_mission; l++) {
+                    pheromone[j][k][l] = (1 - rho) * pheromone[j][k][l];
                 }
             }
         }
@@ -248,24 +244,8 @@ public class AntColony {
                         int current_mission = ant_group.solution[i][j].get(k);
                         int next_mission = ant_group.solution[i][j].get(k+1);
 
-                        pheromone[i][j][current_mission][next_mission] += (1 - (distance - min_distance)/(max_distance - min_distance)) * 10 + nb_mission_same_speciality/nb_total_mission + nb_mission/nb_total_mission*100;
+                        pheromone[j][current_mission][next_mission] += (1 - (distance - min_distance)/(max_distance - min_distance)) * 10 + nb_mission_same_speciality/nb_total_mission + nb_mission/nb_total_mission*100;
                                                 
-                    }
-                }
-            }
-
-        }
-
-        for(int i = 0; i < nb_jour; i++) {
-            int nb_possible_mission = nb_mission_par_jour[i] + sessad.center_name.length;
-            for(int k = 0; k < nb_possible_mission; k++) {
-                for(int l = 0; l < nb_possible_mission; l++) {
-                    float sum = 0;
-                    for(int j = 0; j < sessad.employee.length; j++) {
-                        sum += pheromone[j][i][k][l];
-                    }
-                    for(int j = 0; j < sessad.employee.length; j++) {
-                        pheromone[j][i][k][l] = sum;
                     }
                 }
             }
@@ -275,17 +255,15 @@ public class AntColony {
         float max = 0;
         float min = Float.MAX_VALUE;
 
-        for(int i = 0; i < sessad.employee.length; i++) {
-            for(int j = 0; j < nb_jour; j++) {
-                int nb_possible_mission = nb_mission_par_jour[j] + sessad.center_name.length;
-                for(int k = 0; k < nb_possible_mission; k++) {
-                    for(int l = 0; l < nb_possible_mission; l++) {
-                        if(pheromone[i][j][k][l] > max) {
-                            max = pheromone[i][j][k][l];
-                        }
-                        if(pheromone[i][j][k][l] < min) {
-                            min = pheromone[i][j][k][l];
-                        }
+        for(int j = 0; j < nb_jour; j++) {
+            int nb_possible_mission = nb_mission_par_jour[j] + sessad.center_name.length;
+            for(int k = 0; k < nb_possible_mission; k++) {
+                for(int l = 0; l < nb_possible_mission; l++) {
+                    if(pheromone[j][k][l] > max) {
+                        max = pheromone[j][k][l];
+                    }
+                    if(pheromone[j][k][l] < min) {
+                        min = pheromone[j][k][l];
                     }
                 }
             }
@@ -293,13 +271,11 @@ public class AntColony {
 
         min *= 0.9;
 
-        for(int i = 0; i < sessad.employee.length; i++) {
-            for(int j = 0; j < nb_jour; j++) {
-                int nb_possible_mission = nb_mission_par_jour[j] + sessad.center_name.length;
-                for(int k = 0; k < nb_possible_mission; k++) {
-                    for(int l = 0; l < nb_possible_mission; l++) {
-                        pheromone[i][j][k][l] = (pheromone[i][j][k][l] - min) / (max - min);
-                    }
+        for(int j = 0; j < nb_jour; j++) {
+            int nb_possible_mission = nb_mission_par_jour[j] + sessad.center_name.length;
+            for(int k = 0; k < nb_possible_mission; k++) {
+                for(int l = 0; l < nb_possible_mission; l++) {
+                    pheromone[j][k][l] = (pheromone[j][k][l] - min) / (max - min);
                 }
             }
         }
