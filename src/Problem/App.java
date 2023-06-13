@@ -8,12 +8,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import Benchmark.Benchmark;
 import Solver.AntColony;
 
 public class App {
+    public static String folder;
+    public static int[] parameter2Variations;
+    public static float parameter3Variations;
+    public static float[] parameter4Variations;
+    public static float parameter5;
+    public static float elapsedTimeSec;
     public static void main(String[] args) {
 
-        String folder = "instances/30Missions-2centres/";
+        folder = "instances/30Missions-2centres/";
         String csvFile = folder + "distances.csv";
         String line;
         String csvSplitBy = ",";
@@ -152,16 +159,16 @@ public class App {
 
         System.out.println("Finished loading data");
 
-        // // Variation values for parameters 2-5
-        // int[] parameter2Variations = {10, 100, 1000, 10000};
-        // float parameter3Variations = 0.8f;
-        // float[] parameter4Variations = { 1f, 0.9f, 0.85f, 0.8f };
-        // float parameter5 = 0f;
+        /*//Variation values for parameters 2-5
+        parameter2Variations = new int[] {10, 100, 1000, 10000};
+        parameter3Variations = 0.5f;
+        parameter4Variations = new float[] { 1f, 0.9f, 0.85f, 0.8f };
+        parameter5 = 0f;
 
-        // for (int parameter2 : parameter2Variations) {
-        //     for (float i=parameter3Variations; i<10f; i+=0.5f) {
-        //         for (float parameter4 : parameter4Variations) {
-        //             for (float j=parameter5; j<1f; j+=0.1f) {
+         for (int parameter2 : parameter2Variations) {
+            for (float i=parameter3Variations; i<10f; i+=0.5f) {
+                for (float parameter4 : parameter4Variations) {
+                    for (float j=parameter5; j<1f; j+=0.1f) {*/
                          try {
 
                             AntColony antColony = new AntColony(sessad, 1, 0.5f, 0.5f, 0.5f);
@@ -174,17 +181,19 @@ public class App {
                             ArrayList<Integer>[][] solution = antColony.solve(10, 120);
                             // convert timer to seconds
                             long elapsedTime = System.currentTimeMillis() - startTime;
-                            float elapsedTimeSec = elapsedTime / 1000F;
+                            elapsedTimeSec = elapsedTime / 1000F;
                             
                             System.out.println("Finished solving in " + elapsedTimeSec + " seconds");
-                            
+
+                            Benchmark.main();
+
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-        //             }
-        //         }
-        //     }
-        // }
+                    }/*
+                 }
+            }
+        }*/
 
     }
 }
