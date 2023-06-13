@@ -171,14 +171,14 @@ public class App {
                     for (float j=parameter5; j<1f; j+=0.1f) {*/
                          
 
-                            AntColony antColony = new AntColony(sessad, 100, 1, 0.2, 0.5f);
+                            AntColony antColony = new AntColony(sessad, 100, 0.1f, 1, 0.5f);
                             
                             System.out.println("Starting to solve");
                             
                             // starting a timer
                             long startTime = System.currentTimeMillis();
                             
-                            ArrayList<Integer>[][] solution = antColony.solve(500, 120);
+                            ArrayList<Integer>[][] solution = antColony.solve(50, 120);
                             // convert timer to seconds
                             long elapsedTime = System.currentTimeMillis() - startTime;
                             elapsedTimeSec = elapsedTime / 1000F;
