@@ -37,6 +37,8 @@ public class Ant {
 
     public boolean[][] done;
 
+    public int debug;
+
 
     public Ant(SESSAD sessad, int id, float pheromone[][][], String competence, String specialite, float alpha, float beta, int nb_jour) {
         this.sessad = sessad;
@@ -70,8 +72,9 @@ public class Ant {
             boolean first_mission = true;
 
             mission_done[day].add(center_id);
+            debug = 0;
             do{
-                
+                debug++;
                 current_mission = chooseMission(current_mission, today_working_time, total_working_time, starting_time, pheromone[day]);
                 if(current_mission == -1) {
                     break;
@@ -121,11 +124,11 @@ public class Ant {
         for (int i = 0; i < sessad.distance[day].length; i++) {
             if(isMissionPossible(current_mission,i , today_working_time, total_working_time , starting_time)) {
                 if(center_id == i) {
-                    proba[i] = 0.001f;
+                    proba[i] = 1f * (float) Math.pow(today_pheromone[current_mission][i], alpha)/100 ;
                 }else {
-                    proba[i] = (float) Math.pow(today_pheromone[current_mission][i], alpha) * (float) Math.pow(1 / sessad.distance[day][current_mission][i], beta);
+                    proba[i] = (float) Math.pow(today_pheromone[current_mission][i], alpha)/100 * (float) Math.pow(1 / sessad.distance[day][current_mission][i]*(1440-endingTime(current_mission, i)), beta);
                     if(proba[i] == Double.POSITIVE_INFINITY) {
-                        proba[i] = 1;
+                        proba[i] = 100;
                     }
                 }
                 sum += proba[i];
@@ -166,7 +169,7 @@ public class Ant {
             return true;
         }else if(mission_id == current_mission) {
             return false;
-        }else if(mission_id <= nb_centres) {
+        }else if(mission_id < nb_centres) {
             return false;
         }
 

@@ -13,7 +13,7 @@ import Solver.AntColony;
 public class App {
     public static void main(String[] args) {
 
-        String folder = "instances/30Missions-2centres/";
+        String folder = "instances/200Missions-2centres/";
         String csvFile = folder + "distances.csv";
         String line;
         String csvSplitBy = ",";
@@ -76,7 +76,7 @@ public class App {
                 String[] employeeData = line.split(csvSplitBy);
                 Employee employee = new Employee();
                 employee.setId(Integer.parseInt(employeeData[0]));
-                employee.setCenter_id(Integer.parseInt(employeeData[1]));
+                employee.setCenter_id(Integer.parseInt(employeeData[1])-1);
                 employee.setCompetence(employeeData[2]);
                 employee.setSpecialite(employeeData[3]);
                 employees.add(employee);
@@ -164,14 +164,14 @@ public class App {
         //             for (float j=parameter5; j<1f; j+=0.1f) {
                          try {
 
-                            AntColony antColony = new AntColony(sessad, 1, 0.5f, 0.5f, 0.5f);
+                            AntColony antColony = new AntColony(sessad, 100, 1, 0.5f, 0.5f);
                             
                             System.out.println("Starting to solve");
                             
                             // starting a timer
                             long startTime = System.currentTimeMillis();
                             
-                            ArrayList<Integer>[][] solution = antColony.solve(10, 120);
+                            ArrayList<Integer>[][] solution = antColony.solve(1000, 120);
                             // convert timer to seconds
                             long elapsedTime = System.currentTimeMillis() - startTime;
                             float elapsedTimeSec = elapsedTime / 1000F;

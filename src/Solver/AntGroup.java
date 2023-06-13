@@ -32,7 +32,7 @@ public class AntGroup implements Runnable{
         ants = new Ant[nb_ants];
 
         for (int i = 0; i < nb_ants; i++) {
-            ants[i] = new Ant(sessad, i, pheromone[i], sessad.employee[i].competence, sessad.employee[i].specialite, 1, 1,nb_jour);
+            ants[i] = new Ant(sessad, i, pheromone[i], sessad.employee[i].competence, sessad.employee[i].specialite, alpha, beta,nb_jour);
         }
 
     }
