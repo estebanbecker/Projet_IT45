@@ -258,7 +258,7 @@ public class Ant {
         ending_time = ending_time/DAY_DURATION;
         distance = 1-distance/max_distance;
 
-        return (float) (distance*10 + ending_time*100 + specialite)/111;
+        return (float) (distance*100 + ending_time*10000 + specialite )/10101;
 
     }
 }

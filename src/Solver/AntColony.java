@@ -244,7 +244,7 @@ public class AntColony {
                         int current_mission = ant_group.solution[i][j].get(k);
                         int next_mission = ant_group.solution[i][j].get(k+1);
 
-                        pheromone[j][current_mission][next_mission] += (1 - (distance - min_distance)/(max_distance - min_distance)) * 10 + nb_mission_same_speciality/nb_total_mission + nb_mission/nb_total_mission*100;
+                        pheromone[j][current_mission][next_mission] += (1 - (distance - min_distance)/(max_distance - min_distance)) * 100 + nb_mission_same_speciality/nb_total_mission  + nb_mission/nb_total_mission*10000;
                                                 
                     }
                 }
