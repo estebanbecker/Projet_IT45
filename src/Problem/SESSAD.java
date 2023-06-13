@@ -85,7 +85,7 @@ public class SESSAD {
                     
                     if(solution1[i][j].get(k) >= this.center_name.length){
                         int mission_id1 = ConvertADayAndMissionNumberToMissionId(j, solution1[i][j].get(k) - this.center_name.length);
-                        if (this.employee[i].specialite == this.mission[mission_id1].specialite) {
+                        if (this.employee[i].specialite.equals(this.mission[mission_id1].specialite)) {
                             nb_mission_same_speciality1++;
                         }
                     }
@@ -100,7 +100,7 @@ public class SESSAD {
                     
                     if(solution2[i][j].get(k) >= this.center_name.length){
                         int mission_id2 = ConvertADayAndMissionNumberToMissionId(j, solution2[i][j].get(k) - this.center_name.length);
-                        if(this.employee[i].specialite == this.mission[mission_id2].specialite){
+                        if(this.employee[i].specialite.equals(this.mission[mission_id2].specialite)){
                             nb_mission_same_speciality2++;
                         }
                     }
@@ -124,7 +124,7 @@ public class SESSAD {
                 for (int k = 0; k < solution[i].length; k++) {
                     for(int l = 0; l < solution[i][k].size(); l++){
                         for(int m = 0; m < solution[j][k].size(); m++){
-                            while(solution[i][k].get(l) == solution[j][k].get(m) && solution[i][k].get(l) > this.center_name.length && (i != j || l != m)){
+                            while(solution[i][k].get(l).equals( solution[j][k].get(m)) && solution[i][k].get(l) > this.center_name.length && (i != j || l != m)){
                                 solution = repair(solution, i, j, k, l, m);
                             }
                         }

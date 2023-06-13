@@ -1,6 +1,7 @@
 package Solver;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import Problem.SESSAD;
 
@@ -124,7 +125,10 @@ public class Ant {
             }
         }
 
-        float rand = (float) Math.random() * sum;
+        //initialize randiom
+        Random random = new Random();
+
+        float rand = (float) (random.nextFloat()) * sum;
 
         if(sum == 0) {
             return -1;

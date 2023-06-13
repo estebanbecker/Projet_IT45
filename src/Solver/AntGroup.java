@@ -55,7 +55,7 @@ public class AntGroup implements Runnable{
             solution[ant.id] = ant.mission_done;
         }
 
-        solution = sessad.make_it_valid(solution);
+        //solution = sessad.make_it_valid(solution);
 
     }
 

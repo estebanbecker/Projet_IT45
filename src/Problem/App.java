@@ -1,4 +1,5 @@
 package Problem;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -12,7 +13,7 @@ import Solver.AntColony;
 public class App {
     public static void main(String[] args) {
 
-        String folder = "instances/30Missions-2centres/";
+        String folder = "instances/150Missions-2centres/";
         String csvFile = folder + "distances.csv";
         String line;
         String csvSplitBy = ",";
@@ -51,9 +52,9 @@ public class App {
 
             System.out.println("\n");
             for (int i = 0; i < 5; i++) {
-                System.out.print(i+1 + "\n");
+                System.out.print(i + 1 + "\n");
                 for (int j = 0; j < missionarray[i].length; j++) {
-                        System.out.print(missionarray[i][j] + "\t");
+                    System.out.print(missionarray[i][j] + "\t");
                     System.out.println();
                 }
                 System.out.println();
@@ -89,8 +90,6 @@ public class App {
 
         String csvFile4 = folder + "centres.csv";
 
-        
-
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile4))) {
 
             ArrayList<String> centerNames = new ArrayList<String>();
@@ -102,18 +101,16 @@ public class App {
 
             sessad.center_name = centerNames.toArray(new String[centerNames.size()]);
 
-
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        int citiesCount = sessad.mission.length + sessad.center_name.length; // Assuming you have the number of cities specified
+        int citiesCount = sessad.mission.length + sessad.center_name.length; // Assuming you have the number of cities
+                                                                             // specified
         Float[][] dm = new Float[citiesCount][citiesCount];
 
-        
-
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
-        
+
             int i = 0;
             while ((line = br.readLine()) != null) {
                 String[] distanceData = line.split(csvSplitBy);
@@ -126,13 +123,15 @@ public class App {
             e.printStackTrace();
         }
 
-        //Now but the distance metrix into the right structure with 5 matrix for each day
+        // Now but the distance metrix into the right structure with 5 matrix for each
+        // day
 
         sessad.distance = new Float[5][][];
 
         for (int i = 0; i < 5; i++) {
-            sessad.distance[i] = new Float[sessad.missionPerDay[i].length + sessad.center_name.length][sessad.missionPerDay[i].length + sessad.center_name.length];
- 
+            sessad.distance[i] = new Float[sessad.missionPerDay[i].length
+                    + sessad.center_name.length][sessad.missionPerDay[i].length + sessad.center_name.length];
+
             Integer[] missionIds = new Integer[sessad.missionPerDay[i].length + sessad.center_name.length];
 
             for (int j = 0; j < sessad.center_name.length; j++) {
@@ -140,11 +139,11 @@ public class App {
             }
 
             for (int j = 0; j < sessad.missionPerDay[i].length; j++) {
-                missionIds[j + sessad.center_name.length] = sessad.missionPerDay[i][j]+1;
+                missionIds[j + sessad.center_name.length] = sessad.missionPerDay[i][j] + 1;
             }
 
-            for(int j = 0; j < missionIds.length; j++) {
-                for(int k = 0; k < missionIds.length; k++) {
+            for (int j = 0; j < missionIds.length; j++) {
+                for (int k = 0; k < missionIds.length; k++) {
                     sessad.distance[i][j][k] = dm[missionIds[j]][missionIds[k]];
                 }
             }
@@ -153,21 +152,40 @@ public class App {
 
         System.out.println("Finished loading data");
 
-        AntColony antColony = new AntColony(sessad,10,1,1,0.2f);
+        // Variation values for parameters 2-5
+        int[] parameter2Variations = {10, 100, 1000, 10000};
+        float parameter3Variations = 0.8f;
+        float[] parameter4Variations = { 1f, 0.9f, 0.85f, 0.8f };
+        float parameter5 = 0f;
 
-        System.out.println("Starting to solve");
+        for (int parameter2 : parameter2Variations) {
+            for (float i=parameter3Variations; i<10f; i+=0.5f) {
+                for (float parameter4 : parameter4Variations) {
+                    for (float j=parameter5; j<1f; j+=0.1f) {
+                        try {
 
-        //starting a timer
-        long startTime = System.currentTimeMillis();
+                            AntColony antColony = new AntColony(sessad, parameter2, i, parameter4, j);
+                            
+                            System.out.println("Starting to solve");
+                            
+                            // starting a timer
+                            long startTime = System.currentTimeMillis();
+                            
+                            ArrayList<Integer>[][] solution = antColony.solve(10, 120);
+                            // convert timer to seconds
+                            long elapsedTime = System.currentTimeMillis() - startTime;
+                            float elapsedTimeSec = elapsedTime / 1000F;
+                            
+                            System.out.println("Params used " + parameter2 + " " + i + " " + parameter4 + " " + j);
+                            System.out.println("Finished solving in " + elapsedTimeSec + " seconds");
+                            
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        }
 
-        ArrayList<Integer>[][] solution = antColony.solve(100, 60);
-
-        //convert timer to seconds
-        long elapsedTime = System.currentTimeMillis() - startTime;
-        float elapsedTimeSec = elapsedTime / 1000F;
-        
-        System.out.println("Finished solving in " + elapsedTimeSec + " seconds");
-
-        
     }
 }

@@ -66,7 +66,7 @@ public class AntColony {
 
         AntGroup best_ant = new AntGroup(sessad, nb_iteration_without_improvement, pheromone, current_mission_time, teta, nb_iteration_without_improvement);
         
-        while((System.currentTimeMillis() - current_mission_time) /1000F < maximum_time && nb_iteration_without_improvement < teta) {
+        while((System.currentTimeMillis() - current_mission_time) /1000f < maximum_time && nb_iteration_without_improvement < teta) {
             for(int i = 0; i < nb_ants; i++) {
                 ants[i] = new AntGroup(sessad, i, pheromone, alpha, beta,nb_jour);
                 
