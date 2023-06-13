@@ -256,6 +256,21 @@ public class AntColony {
 
         }
 
+        for(int i = 0; i < nb_jour; i++) {
+            int nb_possible_mission = nb_mission_par_jour[i] + sessad.center_name.length;
+            for(int k = 0; k < nb_possible_mission; k++) {
+                for(int l = 0; l < nb_possible_mission; l++) {
+                    float sum = 0;
+                    for(int j = 0; j < sessad.employee.length; j++) {
+                        sum += pheromone[j][i][k][l];
+                    }
+                    for(int j = 0; j < sessad.employee.length; j++) {
+                        pheromone[j][i][k][l] = sum;
+                    }
+                }
+            }
+        }
+
         //Normalize the pheromone
         float max = 0;
         float min = Float.MAX_VALUE;

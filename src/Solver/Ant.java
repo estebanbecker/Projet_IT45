@@ -260,7 +260,6 @@ public class Ant {
 
         return (float) (distance*10 + ending_time*100 + specialite)/111;
 
-
     }
 }
 
