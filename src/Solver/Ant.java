@@ -35,6 +35,8 @@ public class Ant {
 
     public float total_working_time;
 
+    public boolean[][] done;
+
 
     public Ant(SESSAD sessad, int id, float pheromone[][][], String competence, String specialite, float alpha, float beta, int nb_jour) {
         this.sessad = sessad;
@@ -50,7 +52,9 @@ public class Ant {
         nb_centres = sessad.center_name.length;
     }
 
-    public void run() {
+    public void run(boolean[][] done) { 
+
+        this.done = done;
         
         mission_done = new ArrayList[nb_jour];
         for(int i = 0; i < nb_jour; i++) {
@@ -73,6 +77,7 @@ public class Ant {
                     break;
                 }else if(first_mission){
                     starting_time = (float) (sessad.mission[current_mission].start_time-sessad.distance[day][center_id][current_mission]/(SPEED));
+                    first_mission = false;
                 }
 
                 if(current_mission == center_id) {
@@ -86,7 +91,9 @@ public class Ant {
                 
                 
                 mission_done[day].add(current_mission);
-                
+                if(current_mission >= sessad.center_name.length){
+                    done[day][current_mission-sessad.center_name.length] = true;    
+                }            
                 
 
             }while(current_mission != center_id);
@@ -114,11 +121,11 @@ public class Ant {
         for (int i = 0; i < sessad.distance[day].length; i++) {
             if(isMissionPossible(current_mission,i , today_working_time, total_working_time , starting_time)) {
                 if(center_id == i) {
-                    proba[i] = 0.1f;
+                    proba[i] = 0.001f;
                 }else {
                     proba[i] = (float) Math.pow(today_pheromone[current_mission][i], alpha) * (float) Math.pow(1 / sessad.distance[day][current_mission][i], beta);
                     if(proba[i] == Double.POSITIVE_INFINITY) {
-                        proba[i] = Float.MAX_VALUE;
+                        proba[i] = 1;
                     }
                 }
                 sum += proba[i];
@@ -166,6 +173,10 @@ public class Ant {
         
         int mission_id_day = sessad.ConvertADayAndMissionNumberToMissionId(day, mission_id-sessad.center_name.length);
 
+        //Check that the employee hasn't already done the mission
+        if(done[day][mission_id-sessad.center_name.length]) {
+            return false;
+        }
         //Check that the employee has the right competence
         if(!sessad.mission[mission_id_day].competence.equals(competence)) {
             return false;

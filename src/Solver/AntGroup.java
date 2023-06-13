@@ -10,6 +10,8 @@ public class AntGroup implements Runnable{
 
     public ArrayList<Integer>[][] solution;
 
+    private int nb_jour;
+
     SESSAD sessad;
     
     /**
@@ -22,6 +24,8 @@ public class AntGroup implements Runnable{
      * @param nb_jour   The number of days
      */
     public AntGroup(SESSAD sessad, int nb_ants, float pheromone[][][][], float alpha, float beta, int nb_jour) {
+        
+        this.nb_jour = nb_jour;
         nb_ants = sessad.employee.length;
         this.sessad = sessad;
 
@@ -45,8 +49,18 @@ public class AntGroup implements Runnable{
      * Run the ants
      */
     public void run() {
+
+        boolean[][] done = new boolean[nb_jour][];
+
+        for(int i = 0; i < nb_jour; i++) {
+            done[i] = new boolean[sessad.missionPerDay[i].length];
+            for(int j = 0; j < sessad.missionPerDay[i].length; j++) {
+                done[i][j] = false;
+            }
+        }
+
         for (Ant ant : ants) {
-            ant.run();
+            ant.run(done);
         }
 
         solution = new ArrayList[ants.length][];

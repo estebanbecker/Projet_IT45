@@ -13,7 +13,7 @@ import Solver.AntColony;
 public class App {
     public static void main(String[] args) {
 
-        String folder = "instances/150Missions-2centres/";
+        String folder = "instances/30Missions-2centres/";
         String csvFile = folder + "distances.csv";
         String line;
         String csvSplitBy = ",";
@@ -152,19 +152,19 @@ public class App {
 
         System.out.println("Finished loading data");
 
-        // Variation values for parameters 2-5
-        int[] parameter2Variations = {10, 100, 1000, 10000};
-        float parameter3Variations = 0.8f;
-        float[] parameter4Variations = { 1f, 0.9f, 0.85f, 0.8f };
-        float parameter5 = 0f;
+        // // Variation values for parameters 2-5
+        // int[] parameter2Variations = {10, 100, 1000, 10000};
+        // float parameter3Variations = 0.8f;
+        // float[] parameter4Variations = { 1f, 0.9f, 0.85f, 0.8f };
+        // float parameter5 = 0f;
 
-        for (int parameter2 : parameter2Variations) {
-            for (float i=parameter3Variations; i<10f; i+=0.5f) {
-                for (float parameter4 : parameter4Variations) {
-                    for (float j=parameter5; j<1f; j+=0.1f) {
-                        try {
+        // for (int parameter2 : parameter2Variations) {
+        //     for (float i=parameter3Variations; i<10f; i+=0.5f) {
+        //         for (float parameter4 : parameter4Variations) {
+        //             for (float j=parameter5; j<1f; j+=0.1f) {
+                         try {
 
-                            AntColony antColony = new AntColony(sessad, parameter2, i, parameter4, j);
+                            AntColony antColony = new AntColony(sessad, 1, 0.5f, 0.5f, 0.5f);
                             
                             System.out.println("Starting to solve");
                             
@@ -176,16 +176,15 @@ public class App {
                             long elapsedTime = System.currentTimeMillis() - startTime;
                             float elapsedTimeSec = elapsedTime / 1000F;
                             
-                            System.out.println("Params used " + parameter2 + " " + i + " " + parameter4 + " " + j);
                             System.out.println("Finished solving in " + elapsedTimeSec + " seconds");
                             
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                    }
-                }
-            }
-        }
+        //             }
+        //         }
+        //     }
+        // }
 
     }
 }
