@@ -171,7 +171,7 @@ public class App {
                     for (float j=parameter5; j<1f; j+=0.1f) {*/
                          
 
-                            AntColony antColony = new AntColony(sessad, 100, 1, 1, 0.5f);
+                            AntColony antColony = new AntColony(sessad, 100, 1, 0.2, 0.5f);
                             
                             System.out.println("Starting to solve");
                             
