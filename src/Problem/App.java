@@ -20,7 +20,7 @@ public class App {
     public static float elapsedTimeSec;
     public static void main(String[] args) {
 
-        folder = "instances/30Missions-2centres/";
+        folder = "instances/200Missions-2centres/";
         String csvFile = folder + "distances.csv";
         String line;
         String csvSplitBy = ",";
@@ -169,27 +169,25 @@ public class App {
             for (float i=parameter3Variations; i<10f; i+=0.5f) {
                 for (float parameter4 : parameter4Variations) {
                     for (float j=parameter5; j<1f; j+=0.1f) {*/
-                         try {
+                         
 
-                            AntColony antColony = new AntColony(sessad, 100, 1, 0.5f, 0.5f);
+                            AntColony antColony = new AntColony(sessad, 50, 1, 1, 0.5f);
                             
                             System.out.println("Starting to solve");
                             
                             // starting a timer
                             long startTime = System.currentTimeMillis();
                             
-                            ArrayList<Integer>[][] solution = antColony.solve(1000, 120);
+                            ArrayList<Integer>[][] solution = antColony.solve(100, 120);
                             // convert timer to seconds
                             long elapsedTime = System.currentTimeMillis() - startTime;
                             elapsedTimeSec = elapsedTime / 1000F;
                             
                             System.out.println("Finished solving in " + elapsedTimeSec + " seconds");
 
-                            Benchmark.main();
+                            //Benchmark.main();
 
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                        
                     }/*
                  }
             }

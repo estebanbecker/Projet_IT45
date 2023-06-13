@@ -124,7 +124,7 @@ public class AntColony {
                 for(int k = 0; k < nb_possible_mission; k++) {
                     pheromone[i][j][k] = new float[nb_possible_mission];
                     for(int l = 0; l < nb_possible_mission; l++) {
-                        pheromone[i][j][k][l] = 2000;
+                        pheromone[i][j][k][l] = 1;
                     }
                 }
             }
@@ -239,6 +239,39 @@ public class AntColony {
                 }
             }
 
+        }
+
+        //Normalize the pheromone
+        float max = 0;
+        float min = Float.MAX_VALUE;
+
+        for(int i = 0; i < sessad.employee.length; i++) {
+            for(int j = 0; j < nb_jour; j++) {
+                int nb_possible_mission = nb_mission_par_jour[j] + sessad.center_name.length;
+                for(int k = 0; k < nb_possible_mission; k++) {
+                    for(int l = 0; l < nb_possible_mission; l++) {
+                        if(pheromone[i][j][k][l] > max) {
+                            max = pheromone[i][j][k][l];
+                        }
+                        if(pheromone[i][j][k][l] < min) {
+                            min = pheromone[i][j][k][l];
+                        }
+                    }
+                }
+            }
+        }
+
+        min *= 0.9;
+
+        for(int i = 0; i < sessad.employee.length; i++) {
+            for(int j = 0; j < nb_jour; j++) {
+                int nb_possible_mission = nb_mission_par_jour[j] + sessad.center_name.length;
+                for(int k = 0; k < nb_possible_mission; k++) {
+                    for(int l = 0; l < nb_possible_mission; l++) {
+                        pheromone[i][j][k][l] = (pheromone[i][j][k][l] - min) / (max - min);
+                    }
+                }
+            }
         }
     }
 }
