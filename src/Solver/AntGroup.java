@@ -25,6 +25,8 @@ public class AntGroup implements Runnable{
         nb_ants = sessad.employee.length;
         this.sessad = sessad;
 
+        ants = new Ant[nb_ants];
+
         for (int i = 0; i < nb_ants; i++) {
             ants[i] = new Ant(sessad, i, pheromone[i], sessad.employee[i].competence, sessad.employee[i].specialite, 1, 1,nb_jour);
         }
@@ -47,11 +49,13 @@ public class AntGroup implements Runnable{
             ant.run();
         }
 
+        solution = new ArrayList[ants.length][];
+
         for (Ant ant : ants) {
             solution[ant.id] = ant.mission_done;
         }
 
-        solution = sessad.make_it_valid(solution);
+        //solution = sessad.make_it_valid(solution);
 
     }
 

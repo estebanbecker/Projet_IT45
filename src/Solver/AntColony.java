@@ -38,7 +38,6 @@ public class AntColony {
                 nb_jour = sessad.mission[i].day;
             }
         }
-        nb_jour++;
 
         nb_mission_par_jour = new int[nb_jour];
 
@@ -62,7 +61,12 @@ public class AntColony {
         long current_mission_time = System.currentTimeMillis();
         int nb_iteration_without_improvement = 0;
         Thread[] threads = new Thread[nb_ants];
-        while(System.currentTimeMillis() - current_mission_time < maximum_time && nb_iteration_without_improvement < teta) {
+
+        ants = new AntGroup[nb_ants];
+
+        AntGroup best_ant = new AntGroup(sessad, nb_iteration_without_improvement, pheromone, current_mission_time, teta, nb_iteration_without_improvement);
+        
+        while((System.currentTimeMillis() - current_mission_time) /1000f < maximum_time && nb_iteration_without_improvement < teta) {
             for(int i = 0; i < nb_ants; i++) {
                 ants[i] = new AntGroup(sessad, i, pheromone, alpha, beta,nb_jour);
                 
@@ -79,20 +83,30 @@ public class AntColony {
             for(int i = 0; i < nb_ants; i++) {
                 if(sessad.is_it_better(ants[i].solution, best_solution)) {
                     best_solution = ants[i].solution;
+                    best_ant = ants[i];
                     nb_iteration_without_improvement = 0;
+                }else{
+                    nb_iteration_without_improvement++;
                 }
             }
         }
         printSolution(best_solution);
+
+        System.out.println("Working time");
+
+        for(int i = 0; i<best_ant.ants.length; i++) {
+            System.out.println("Ant " + i + " : " + best_ant.ants[i].total_working_time);
+        }
+
         return best_solution;
     }
 
     public void initPheromone() {
-        pheromone = new float[nb_jour][sessad.employee.length][][];
+        pheromone = new float[sessad.employee.length][nb_jour][][];
 
-        for(int i = 0; i < nb_jour; i++) {
-            for(int j = 0; j < sessad.employee.length; j++) {
-                int nb_possible_mission = nb_mission_par_jour[i] + sessad.center_name.length;
+        for(int i = 0; i < sessad.employee.length; i++) {
+            for(int j = 0; j < nb_jour ; j++) {
+                int nb_possible_mission = nb_mission_par_jour[j] + sessad.center_name.length;
                 pheromone[i][j] = new float[nb_possible_mission][];
                 for(int k = 0; k < nb_possible_mission; k++) {
                     pheromone[i][j][k] = new float[nb_possible_mission];
@@ -106,14 +120,16 @@ public class AntColony {
 
     public void printSolution(ArrayList<Integer>[][] solution) {
         for(int i = 0; i < solution.length; i++) {
-            int offset = 0;
             for(int j = 0; j < solution[i].length; j++) {
 
                 for(int k = 0; k < solution[i][j].size(); k++) {
-                    int current_mission = solution[i][j].get(k)-2 + offset;
-                    System.out.println("Employee : " + i + " Day : " + j + " Mission : " + current_mission);
+                    if(solution[i][j].get(k) != sessad.employee[i].center_id) {
+                        int current_mission = sessad.ConvertADayAndMissionNumberToMissionId(j, solution[i][j].get(k) - sessad.center_name.length);
+                        System.out.println("Employee : " + i + " Day : " + j + " Mission : " + current_mission);                        
+                        System.out.println(sessad.employee[i].specialite + " et " + sessad.mission[current_mission].specialite);
+
+                    }
                 }
-                offset += nb_mission_par_jour[j];
             }
         }
 
@@ -121,7 +137,11 @@ public class AntColony {
         int nb_mission = 0;
         for(int i = 0; i < solution.length; i++) {
             for(int j = 0; j < solution[i].length; j++) {
-                nb_mission += solution[i][j].size();
+                for(int k = 0; k < solution[i][j].size(); k++) {
+                    if(solution[i][j].get(k) != sessad.employee[i].center_id) {
+                        nb_mission++;
+                    }
+                }
             }
         }
         System.out.println("Number of mission : " + nb_mission);
@@ -131,7 +151,7 @@ public class AntColony {
         for(int i = 0; i < solution.length; i++) {
             for(int j = 0; j < solution[i].length; j++) {
                 for(int k = 0; k < solution[i][j].size()-1; k++) {
-                    distance += sessad.distance[i][solution[i][j].get(k)][solution[i][j].get(k)+1];
+                    distance += sessad.distance[j][solution[i][j].get(k)][solution[i][j].get(k+1)];
                 }
             }
         }
@@ -145,8 +165,11 @@ public class AntColony {
         for(int i = 0; i < solution.length; i++) {
             for(int j = 0; j < solution[i].length; j++) {
                 for(int k = 0; k < solution[i][j].size(); k++) {
-                    if(sessad.employee[i].specialite == sessad.mission[solution[i][j].get(k)].specialite) {
-                        nb_mission_same_speciality++;
+                    if(solution[i][j].get(k) != sessad.employee[i].center_id){
+                        int mission_id = sessad.ConvertADayAndMissionNumberToMissionId(j, solution[i][j].get(k) - sessad.center_name.length);
+                        if(sessad.employee[i].specialite.equals(sessad.mission[mission_id].specialite)) {
+                            nb_mission_same_speciality++;
+                        }
                     }
                 }
             }
@@ -156,7 +179,7 @@ public class AntColony {
 
     }
 
-    public void ubpdatePheromone() {
+    public void updatePheromone() {
         for(int i = 0; i < nb_jour; i++) {
             for(int j = 0; j < sessad.employee.length; j++) {
                 for(int k = 0; k < pheromone[i][j].length; k++) {
@@ -222,7 +245,9 @@ public class AntColony {
                             if(next_mission != -1) {
                                 distance[i][j][current_mission][next_mission] += sessad.distance[i][current_mission][next_mission];
                                 nb_mission[i][j][current_mission][next_mission] += 1;
-                                if(sessad.employee[i].specialite == sessad.mission[current_mission].specialite) {
+                                int mission_id = sessad.ConvertADayAndMissionNumberToMissionId(j,current_mission);
+                                
+                                if(sessad.employee[i].specialite.equals(sessad.mission[mission_id].specialite)) {
                                     nb_mission_same_speciality[i][j][current_mission][next_mission] += 1;
                                 }
                             }

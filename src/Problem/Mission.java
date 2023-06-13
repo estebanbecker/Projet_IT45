@@ -26,17 +26,15 @@ public class Mission {
         return missionIds;
     }
 
-    public static Float[][][] createMissionIndexArrayByDay(List<Mission> Missions) {
-        Float[][][] missionIndexArrayByDay = new Float[5][][]; // Assuming there are 5 days in a week
+    public static Integer[][] createMissionIndexArrayByDay(List<Mission> Missions) {
+        Integer[][] missionIndexArrayByDay = new Integer[5][]; // Assuming there are 5 days in a week
 
         for (int day = 1; day <= 5; day++) {
             List<Integer> missionIds = Mission.getMissionIdsForDay(day, Missions);
-            Float[][] missionIndexArray = new Float[missionIds.size()][missionIds.size()];
+            Integer[] missionIndexArray = new Integer[missionIds.size()];
 
             for (int i = 0; i < missionIds.size(); i++) {
-                for (int j = 0; j < missionIds.size(); j++) {
-                    missionIndexArray[i][j] = Float.valueOf(missionIds.get(i));
-                }
+                missionIndexArray[i] = Integer.valueOf(missionIds.get(i));    
             }
 
             missionIndexArrayByDay[day - 1] = missionIndexArray;

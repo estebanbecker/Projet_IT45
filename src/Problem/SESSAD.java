@@ -13,16 +13,9 @@ public class SESSAD {
 
     public Employee[] employee;
 
-    private int id;
     public String name;
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
+    public Integer [][] missionPerDay;
 
     public String getName() {
         return name;
@@ -35,7 +28,6 @@ public class SESSAD {
     @Override
     public String toString() {
         return "Mission{" +
-                "id=" + id +
                 ", name=" + name +
                 '}';
     }
@@ -68,8 +60,10 @@ public class SESSAD {
         for (int i = 0; i < solution1.length; i++) {
             for (int j = 0; j < solution1[i].length; j++) {
                 for (int k = 0; k < solution1[i][j].size() - 1; k++) {
-                    distance1 += this.distance[i][solution1[i][j].get(k)][solution1[i][j].get(k) + 1];
-                    distance2 += this.distance[i][solution2[i][j].get(k)][solution2[i][j].get(k) + 1];
+                    distance1 += this.distance[j][solution1[i][j].get(k)][solution1[i][j].get(k + 1)];
+                }
+                for (int k = 0; k < solution2[i][j].size() - 1; k++) {
+                    distance2 += this.distance[j][solution2[i][j].get(k)][solution2[i][j].get(k + 1)];
                 }
             }
         }
@@ -88,12 +82,29 @@ public class SESSAD {
         for (int i = 0; i < solution1.length; i++) {
             for (int j = 0; j < solution1[i].length; j++) {
                 for (int k = 0; k < solution1[i][j].size(); k++) {
-                    if (this.employee[i].specialite == this.mission[solution1[i][j].get(k)].specialite) {
-                        nb_mission_same_speciality1++;
+                    
+                    if(solution1[i][j].get(k) >= this.center_name.length){
+                        int mission_id1 = ConvertADayAndMissionNumberToMissionId(j, solution1[i][j].get(k) - this.center_name.length);
+                        if (this.employee[i].specialite.equals(this.mission[mission_id1].specialite)) {
+                            nb_mission_same_speciality1++;
+                        }
                     }
-                    if (this.employee[i].specialite == this.mission[solution2[i][j].get(k)].specialite) {
-                        nb_mission_same_speciality2++;
+
+                }
+            }
+        }
+
+        for(int i = 0; i < solution2.length; i++){
+            for(int j = 0; j < solution2[i].length; j++){
+                for(int k = 0; k < solution2[i][j].size(); k++){
+                    
+                    if(solution2[i][j].get(k) >= this.center_name.length){
+                        int mission_id2 = ConvertADayAndMissionNumberToMissionId(j, solution2[i][j].get(k) - this.center_name.length);
+                        if(this.employee[i].specialite.equals(this.mission[mission_id2].specialite)){
+                            nb_mission_same_speciality2++;
+                        }
                     }
+
                 }
             }
         }
@@ -109,17 +120,15 @@ public class SESSAD {
     public ArrayList<Integer>[][] make_it_valid(ArrayList<Integer>[][] solution) {
         // Check that each mission is done maximum one time
         for (int i = 0; i < solution.length; i++) {
-            for (int j = 0; j < solution[i].length; j++) {
-                for (int k = 0; k < solution[i][j].size(); k++) {
-                    for (int l = j + 1; l < solution[i].length; l++) {
-                        for (int m = k + 1; m < solution[i][l].size(); m++) {
-                            if (solution[i][j].get(k) == solution[i][l].get(m) && solution[i][j].get(k) != -1
-                                    && solution[i][l].get(k) >= this.center_name.length) {
-                                solution = repair(solution, i, j, k);
-                                m -= 1;
-                                k -= 1;
+            for (int j = 0; j < solution.length; j++) {
+                for (int k = 0; k < solution[i].length; k++) {
+                    for(int l = 0; l < solution[i][k].size(); l++){
+                        for(int m = 0; m < solution[j][k].size(); m++){
+                            while(solution[i][k].get(l).equals( solution[j][k].get(m)) && solution[i][k].get(l) > this.center_name.length && (i != j || l != m)){
+                                solution = repair(solution, i, j, k, l, m);
                             }
                         }
+                        
                     }
                 }
             }
@@ -127,17 +136,17 @@ public class SESSAD {
         return solution;
     }
 
-    public ArrayList<Integer>[][] repair(ArrayList<Integer>[][] solution, int i, int j, int k) {
+    public ArrayList<Integer>[][] repair(ArrayList<Integer>[][] solution, int i1, int i2, int j, int k1, int k2) {
 
         // make two deep copies of the solution
         ArrayList<Integer>[][] solution1 = deepcopy(solution);
         ArrayList<Integer>[][] solution2 = deepcopy(solution);
 
         // remove the mission from the first solution
-        solution1[i][j].remove(k);
+        solution1[i1][j].remove(k1);
 
         // remove the mission from the second solution
-        solution2[i][j].remove(k);
+        solution2[i2][j].remove(k2);
 
         // compare the two solutions
         if (is_it_better(solution1, solution2)) {
@@ -161,6 +170,10 @@ public class SESSAD {
         }
 
         return newArray;
+    }
+
+    public Integer ConvertADayAndMissionNumberToMissionId(int day, int mission_number) {
+        return this.missionPerDay[day][mission_number]-1;
     }
 
 }

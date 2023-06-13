@@ -1,4 +1,5 @@
 package Problem;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -7,47 +8,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import Solver.AntColony;
+
 public class App {
     public static void main(String[] args) {
-        String csvFile = "instances/30Missions-2centres/distances.csv";
+
+        String folder = "instances/150Missions-2centres/";
+        String csvFile = folder + "distances.csv";
         String line;
         String csvSplitBy = ",";
-        int citiesCount = 30; // Assuming you have the number of cities specified
-        distanceMatrix dm = new distanceMatrix(citiesCount);
+        SESSAD sessad = new SESSAD();
 
-        try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
-            Float[][] distancesArray = new Float[citiesCount+2][citiesCount+2];
-            int row = 0;
-            while ((line = br.readLine()) != null) {
-                String[] distances = line.split(csvSplitBy);
-                for (int col = 2; col < citiesCount+2; col++) {
-                    //give the method in float to convert the string to float
-                    //limit the float to 2 decimal places
-                    distancesArray[row][col] = Float.parseFloat(distances[col]);
-                    //put those inside dm as well
-                    dm.setDistances(row,col,Float.parseFloat(distances[col]));
-                }
-                row++;
-            }
-
-            // Print the distancesArray
-
-            System.out.println("\n");
-            for (int i = 2; i < citiesCount+2; i++) {
-                System.out.print(i-1 + "\t");
-                for (int j = 2; j < citiesCount+2; j++) {
-                    //System.out.print(distancesArray[i][j] + "\t");
-                    //print out the dm as well
-
-                    System.out.print(dm.getDistances(i,j) + "\t");
-                }
-                System.out.println();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        String csvFile2 = "instances/30Missions-2centres/Missions.csv";
+        String csvFile2 = folder + "Missions.csv";
         List<Mission> Missions = new ArrayList<>();
         Map<Integer, String> dayMapping = new HashMap<>();
         dayMapping.put(1, "Monday");
@@ -70,39 +42,33 @@ public class App {
                 Missions.add(mission);
             }
 
-
-
-            // Print the missions with day information
-            for (Mission mission : Missions) {
-                int dayIndex = mission.getDay();
-                System.out.println("Mission: " + mission.getId() + ", Day: " + dayIndex + ", Day Name: " + dayMapping.get(dayIndex) + ", Distance= " + dm.getDistances(mission.getId(),2));
-            }
-
             System.out.println("Missions for monday: " + Mission.getMissionIdsForDay(1, Missions));
             System.out.println("Missions for tuesday: " + Mission.getMissionIdsForDay(2, Missions));
             System.out.println("Missions for wednesday: " + Mission.getMissionIdsForDay(3, Missions));
             System.out.println("Missions for thursday: " + Mission.getMissionIdsForDay(4, Missions));
             System.out.println("Missions for friday: " + Mission.getMissionIdsForDay(5, Missions));
 
-            Float[][][] missionarray = Mission.createMissionIndexArrayByDay(Missions);
+            Integer[][] missionarray = Mission.createMissionIndexArrayByDay(Missions);
 
             System.out.println("\n");
             for (int i = 0; i < 5; i++) {
-                System.out.print(i+1 + "\n");
+                System.out.print(i + 1 + "\n");
                 for (int j = 0; j < missionarray[i].length; j++) {
-                    for (int k = 0; k < missionarray[i][j].length; k++) {
-                        System.out.print(missionarray[i][j][k] + "\t");
-                    }
+                    System.out.print(missionarray[i][j] + "\t");
                     System.out.println();
                 }
                 System.out.println();
             }
 
+            sessad.missionPerDay = missionarray;
+
+            sessad.mission = Missions.toArray(new Mission[Missions.size()]);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        String csvFile3 = "instances/30Missions-2centres/Employees.csv";
+        String csvFile3 = folder + "Employees.csv";
         List<Employee> employees = new ArrayList<>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile3))) {
@@ -117,36 +83,109 @@ public class App {
             }
 
             // Print the employees
-            for (Employee employee : employees) {
-                System.out.println(employee);
-            }
+            sessad.employee = employees.toArray(new Employee[employees.size()]);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        String csvFile4 = "instances/30Missions-2centres/centers.csv";
-        List<SESSAD> SESSADS = new ArrayList<>();
-
+        String csvFile4 = folder + "centres.csv";
 
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile4))) {
 
+            ArrayList<String> centerNames = new ArrayList<String>();
+
             while ((line = br.readLine()) != null) {
                 String[] centerData = line.split(csvSplitBy);
-                SESSAD SESSAD = new SESSAD();
-                //REMOVE BOM IN INTELLIJ
-                //System.out.println(Integer.parseInt(centerData[0].replaceFirst("\uFEFF", "")));
-                SESSAD.setId(Integer.parseInt(centerData[0].replaceFirst("\uFEFF", "")));
-                //center.setId(Integer.parseInt(centerData[0]));
-                SESSAD.setName(centerData[1]);
-                SESSADS.add(SESSAD);
+                centerNames.add(centerData[1]);
             }
 
-            // Print the employees
-            for (SESSAD SESSAD : SESSADS) {
-                System.out.println(SESSAD);
+            sessad.center_name = centerNames.toArray(new String[centerNames.size()]);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        int citiesCount = sessad.mission.length + sessad.center_name.length; // Assuming you have the number of cities
+                                                                             // specified
+        Float[][] dm = new Float[citiesCount][citiesCount];
+
+        try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+
+            int i = 0;
+            while ((line = br.readLine()) != null) {
+                String[] distanceData = line.split(csvSplitBy);
+                for (int j = 0; j < citiesCount; j++) {
+                    dm[i][j] = Float.parseFloat(distanceData[j]);
+                }
+                i++;
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        // Now but the distance metrix into the right structure with 5 matrix for each
+        // day
+
+        sessad.distance = new Float[5][][];
+
+        for (int i = 0; i < 5; i++) {
+            sessad.distance[i] = new Float[sessad.missionPerDay[i].length
+                    + sessad.center_name.length][sessad.missionPerDay[i].length + sessad.center_name.length];
+
+            Integer[] missionIds = new Integer[sessad.missionPerDay[i].length + sessad.center_name.length];
+
+            for (int j = 0; j < sessad.center_name.length; j++) {
+                missionIds[j] = j;
+            }
+
+            for (int j = 0; j < sessad.missionPerDay[i].length; j++) {
+                missionIds[j + sessad.center_name.length] = sessad.missionPerDay[i][j] + 1;
+            }
+
+            for (int j = 0; j < missionIds.length; j++) {
+                for (int k = 0; k < missionIds.length; k++) {
+                    sessad.distance[i][j][k] = dm[missionIds[j]][missionIds[k]];
+                }
+            }
+
+        }
+
+        System.out.println("Finished loading data");
+
+        // Variation values for parameters 2-5
+        int[] parameter2Variations = {10, 100, 1000, 10000};
+        float parameter3Variations = 0.8f;
+        float[] parameter4Variations = { 1f, 0.9f, 0.85f, 0.8f };
+        float parameter5 = 0f;
+
+        for (int parameter2 : parameter2Variations) {
+            for (float i=parameter3Variations; i<10f; i+=0.5f) {
+                for (float parameter4 : parameter4Variations) {
+                    for (float j=parameter5; j<1f; j+=0.1f) {
+                        try {
+
+                            AntColony antColony = new AntColony(sessad, parameter2, i, parameter4, j);
+                            
+                            System.out.println("Starting to solve");
+                            
+                            // starting a timer
+                            long startTime = System.currentTimeMillis();
+                            
+                            ArrayList<Integer>[][] solution = antColony.solve(10, 120);
+                            // convert timer to seconds
+                            long elapsedTime = System.currentTimeMillis() - startTime;
+                            float elapsedTimeSec = elapsedTime / 1000F;
+                            
+                            System.out.println("Params used " + parameter2 + " " + i + " " + parameter4 + " " + j);
+                            System.out.println("Finished solving in " + elapsedTimeSec + " seconds");
+                            
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        }
+
     }
 }
