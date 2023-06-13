@@ -218,12 +218,27 @@ public class AntColony {
             }
         }
         
-        float multiplier_nb_mission_same_speciality = 1;
-        float multiplier_distance = sessad.mission.length;
-        float multiplier_nb_mission = sessad.mission.length + multiplier_distance;
+        float nb_total_mission = sessad.mission.length;
+
+        float max_distance = 0;
+        float min_distance = Float.MAX_VALUE;
 
         for(AntGroup ant_group : ants) {
             float distance = distance(ant_group.solution);
+            if(distance > max_distance) {
+                max_distance = distance;
+            }
+            if(distance < min_distance) {
+                min_distance = distance;
+            }
+        }
+
+
+        for(AntGroup ant_group : ants) {
+            float distance = distance(ant_group.solution);
+
+
+
             int nb_mission = nb_mission(ant_group.solution);
             int nb_mission_same_speciality = nb_mission_same_speciality(ant_group.solution);
 
@@ -233,7 +248,7 @@ public class AntColony {
                         int current_mission = ant_group.solution[i][j].get(k);
                         int next_mission = ant_group.solution[i][j].get(k+1);
 
-                        pheromone[i][j][current_mission][next_mission] += ((1 / distance)+1) * multiplier_distance + (nb_mission) * multiplier_nb_mission + (nb_mission_same_speciality) * multiplier_nb_mission_same_speciality;
+                        pheromone[i][j][current_mission][next_mission] += (1 - (distance - min_distance)/(max_distance - min_distance)) * 10 + nb_mission_same_speciality/nb_total_mission + nb_mission/nb_total_mission*100;
                                                 
                     }
                 }

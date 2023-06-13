@@ -167,7 +167,7 @@ public class Ant {
                 }
             }
         }
-        throw new RuntimeException("No mission found");
+        return center_id;
     }
 
     /**
@@ -258,7 +258,7 @@ public class Ant {
         ending_time = ending_time/DAY_DURATION;
         distance = 1-distance/max_distance;
 
-        return (float) (distance*2 + ending_time*3 + specialite)/6;
+        return (float) (distance*10 + ending_time*100 + specialite)/111;
 
 
     }
