@@ -4,6 +4,9 @@ import java.util.ArrayList;
 
 import Problem.SESSAD;
 
+import java.io.File;
+import java.io.FileWriter;
+
 public class AntColony {
     
     private SESSAD sessad;
@@ -15,7 +18,7 @@ public class AntColony {
 
     private AntGroup[] ants;
 
-    private float pheromone[][][][];
+    private float pheromone[][][];
 
     private ArrayList<Integer>[][] best_solution;
 
@@ -52,21 +55,34 @@ public class AntColony {
 
     public ArrayList<Integer>[][] solve(int teta, float maximum_time){
         initPheromone();
+
+        //Initialise the ArryList to Integer
+
+
+        //Initialise the counter for the limit condition
+        long current_mission_time = System.currentTimeMillis();
+        int nb_iteration_without_improvement = 0;
+
+        //Initialise the ants
+        Thread[] threads = new Thread[nb_ants];
+        ants = new AntGroup[nb_ants];
+
+        //Initialise the best solution
+        //dimension 0: employee
+        //dimension 1: day
+        //dimension 2: mission
         best_solution = new ArrayList[sessad.employee.length][nb_jour];
         for(int i = 0; i < sessad.employee.length; i++) {
             for(int j = 0; j < nb_jour; j++) {
                 best_solution[i][j] = new ArrayList<Integer>();
             }
         }
-        long current_mission_time = System.currentTimeMillis();
-        int nb_iteration_without_improvement = 0;
-        Thread[] threads = new Thread[nb_ants];
-
-        ants = new AntGroup[nb_ants];
-
         AntGroup best_ant = new AntGroup(sessad, nb_iteration_without_improvement, pheromone, current_mission_time, teta, nb_iteration_without_improvement);
+
         
+        int nb_iteration = 0;
         while((System.currentTimeMillis() - current_mission_time) /1000f < maximum_time && nb_iteration_without_improvement < teta) {
+            nb_iteration++;
             for(int i = 0; i < nb_ants; i++) {
                 ants[i] = new AntGroup(sessad, i, pheromone, alpha, beta,nb_jour);
                 
@@ -80,60 +96,85 @@ public class AntColony {
                     e.printStackTrace();
                 }
             }
+            boolean improvement = false;
             for(int i = 0; i < nb_ants; i++) {
-                if(sessad.is_it_better(ants[i].solution, best_solution)) {
-                    best_solution = ants[i].solution;
-                    best_ant = ants[i];
-                    nb_iteration_without_improvement = 0;
-                }else{
-                    nb_iteration_without_improvement++;
+                if(ants[i].solution!= null){
+                    if(sessad.is_it_better(ants[i].solution, best_solution)) {
+                        best_solution = ants[i].solution;
+                        best_ant = ants[i];
+                        improvement = true;
+                    }
                 }
             }
+            if(improvement) {
+                nb_iteration_without_improvement = 0;
+                System.out.println("New best solution at iteration " + nb_iteration);
+                printSolution(best_solution);
+                System.out.println("");
+            } else {
+                nb_iteration_without_improvement++;
+            }
+            updatePheromone();
         }
         printSolution(best_solution);
 
-        System.out.println("Working time");
+        // System.out.println("Working time");
 
-        for(int i = 0; i<best_ant.ants.length; i++) {
-            System.out.println("Ant " + i + " : " + best_ant.ants[i].total_working_time);
-        }
+        // for(int i = 0; i<best_ant.ants.length; i++) {
+        //     System.out.println("Ant " + i + " : " + best_ant.ants[i].total_working_time);
+        // }
+
+        System.out.println("Number of iteration : " + nb_iteration);
 
         return best_solution;
     }
 
     public void initPheromone() {
-        pheromone = new float[sessad.employee.length][nb_jour][][];
+        pheromone = new float[nb_jour][][];
 
-        for(int i = 0; i < sessad.employee.length; i++) {
-            for(int j = 0; j < nb_jour ; j++) {
-                int nb_possible_mission = nb_mission_par_jour[j] + sessad.center_name.length;
-                pheromone[i][j] = new float[nb_possible_mission][];
-                for(int k = 0; k < nb_possible_mission; k++) {
-                    pheromone[i][j][k] = new float[nb_possible_mission];
-                    for(int l = 0; l < nb_possible_mission; l++) {
-                        pheromone[i][j][k][l] = 1;
-                    }
+        for(int j = 0; j < nb_jour ; j++) {
+            int nb_possible_mission = nb_mission_par_jour[j] + sessad.center_name.length;
+            pheromone[j] = new float[nb_possible_mission][];
+            for(int k = 0; k < nb_possible_mission; k++) {
+                pheromone[j][k] = new float[nb_possible_mission];
+                for(int l = 0; l < nb_possible_mission; l++) {
+                    pheromone[j][k][l] = 1;
                 }
             }
         }
     }
 
     public void printSolution(ArrayList<Integer>[][] solution) {
-        for(int i = 0; i < solution.length; i++) {
-            for(int j = 0; j < solution[i].length; j++) {
+        // for(int i = 0; i < solution.length; i++) {
+        //     for(int j = 0; j < solution[i].length; j++) {
 
-                for(int k = 0; k < solution[i][j].size(); k++) {
-                    if(solution[i][j].get(k) != sessad.employee[i].center_id) {
-                        int current_mission = sessad.ConvertADayAndMissionNumberToMissionId(j, solution[i][j].get(k) - sessad.center_name.length);
-                        System.out.println("Employee : " + i + " Day : " + j + " Mission : " + current_mission);                        
-                        System.out.println(sessad.employee[i].specialite + " et " + sessad.mission[current_mission].specialite);
+        //         for(int k = 0; k < solution[i][j].size(); k++) {
+        //             if(solution[i][j].get(k) != sessad.employee[i].center_id) {
+        //                 int current_mission = sessad.ConvertADayAndMissionNumberToMissionId(j, solution[i][j].get(k) - sessad.center_name.length);
+        //                 System.out.println("Employee : " + i + " Day : " + j + " Mission : " + current_mission);                        
+        //                 System.out.println(sessad.employee[i].specialite + " et " + sessad.mission[current_mission].specialite);
 
-                    }
-                }
-            }
-        }
+        //             }
+        //         }
+        //     }
+        // }
 
         //Print the number of mission
+
+        System.out.println("Number of mission : " + nb_mission(solution));
+
+        //Print the distance
+
+        System.out.println("Distance : " + distance(solution));
+
+        //Print the number of mission where the speciality are the same
+
+
+        System.out.println("Number of mission where the speciality are the same : " + nb_mission_same_speciality(solution));
+
+    }
+
+    public int nb_mission(ArrayList<Integer>[][] solution) {
         int nb_mission = 0;
         for(int i = 0; i < solution.length; i++) {
             for(int j = 0; j < solution[i].length; j++) {
@@ -144,22 +185,10 @@ public class AntColony {
                 }
             }
         }
-        System.out.println("Number of mission : " + nb_mission);
+        return nb_mission;
+    }
 
-        //Print the distance
-        float distance = 0;
-        for(int i = 0; i < solution.length; i++) {
-            for(int j = 0; j < solution[i].length; j++) {
-                for(int k = 0; k < solution[i][j].size()-1; k++) {
-                    distance += sessad.distance[j][solution[i][j].get(k)][solution[i][j].get(k+1)];
-                }
-            }
-        }
-
-        System.out.println("Distance : " + distance);
-
-        //Print the number of mission where the speciality are the same
-
+    public int nb_mission_same_speciality(ArrayList<Integer>[][] solution) {
         int nb_mission_same_speciality = 0;
 
         for(int i = 0; i < solution.length; i++) {
@@ -175,99 +204,93 @@ public class AntColony {
             }
         }
 
-        System.out.println("Number of mission where the speciality are the same : " + nb_mission_same_speciality);
+        return nb_mission_same_speciality;
+    }
 
+    public float distance(ArrayList<Integer>[][] solution) {
+        float distance = 0;
+        for(int i = 0; i < solution.length; i++) {
+            for(int j = 0; j < solution[i].length; j++) {
+                for(int k = 0; k < solution[i][j].size()-1; k++) {
+                    distance += sessad.distance[j][solution[i][j].get(k)][solution[i][j].get(k+1)];
+                }
+            }
+        }
+        return distance;
     }
 
     public void updatePheromone() {
-        for(int i = 0; i < nb_jour; i++) {
-            for(int j = 0; j < sessad.employee.length; j++) {
-                for(int k = 0; k < pheromone[i][j].length; k++) {
-                    for(int l = 0; l < pheromone[i][j][k].length; l++) {
-                        pheromone[i][j][k][l] = (1 - rho) * pheromone[i][j][k][l];
-                    }
+        for (int j = 0; j < nb_jour; j++) {
+            int nb_possible_mission = nb_mission_par_jour[j] + sessad.center_name.length;
+            for (int k = 0; k < nb_possible_mission; k++) {
+                for (int l = 0; l < nb_possible_mission; l++) {
+                    pheromone[j][k][l] = (1 - rho) * pheromone[j][k][l];
                 }
             }
         }
+        
+        float nb_total_mission = sessad.mission.length;
 
-        float distance[][][][] = new float[nb_jour][sessad.employee.length][][];
-        for(int i = 0; i < nb_jour; i++) {
-            for(int j = 0; j < sessad.employee.length; j++) {
-                int nb_possibilite = nb_mission_par_jour[i] + sessad.center_name.length;
-                distance[i][j] = new float[nb_possibilite][];
-                for(int k = 0; k < nb_possibilite; k++) {
-                    distance[i][j][k] = new float[nb_possibilite];
-                    for(int l = 0; l < nb_possibilite; l++) {
-                        distance[i][j][k][l] = 0;
-                    }
-                }
-            }
-        }
-
-        float nb_mission[][][][] = new float[nb_jour][sessad.employee.length][][];
-        for(int i = 0; i < nb_jour; i++) {
-            for(int j = 0; j < sessad.employee.length; j++) {
-                int nb_possibilite = nb_mission_par_jour[i] + sessad.center_name.length;
-                nb_mission[i][j] = new float[nb_possibilite][];
-                for(int k = 0; k < nb_possibilite; k++) {
-                    nb_mission[i][j][k] = new float[nb_possibilite];
-                    for(int l = 0; l < nb_possibilite; l++) {
-                        nb_mission[i][j][k][l] = 0;
-                    }
-                }
-            }
-        }
-
-        float nb_mission_same_speciality[][][][] = new float[nb_jour][sessad.employee.length][][];
-        for(int i = 0; i < nb_jour; i++) {
-            for(int j = 0; j < sessad.employee.length; j++) {
-                int nb_possibilite = nb_mission_par_jour[i] + sessad.center_name.length;
-                nb_mission_same_speciality[i][j] = new float[nb_possibilite][];
-                for(int k = 0; k < nb_possibilite; k++) {
-                    nb_mission_same_speciality[i][j][k] = new float[nb_possibilite];
-                    for(int l = 0; l < nb_possibilite; l++) {
-                        nb_mission_same_speciality[i][j][k][l] = 0;
-                    }
-                }
-            }
-        }
+        float max_distance = 0;
+        float min_distance = Float.MAX_VALUE;
 
         for(AntGroup ant_group : ants) {
-            for(Ant ant : ant_group.ants) {
-                for(int i = 0; i < ant.mission_done.length; i++) {
-                    for(int j = 0; j < ant.mission_done[i].size(); j++) {
-                        if(ant.mission_done[i].get(j) != -1) {
-                            int current_mission = ant.mission_done[i].get(j);
-                            int next_mission = -1;
-                            if(j != ant.mission_done[i].size()-1) {
-                                next_mission = ant.mission_done[i].get(j+1);
-                            }
-                            if(next_mission != -1) {
-                                distance[i][j][current_mission][next_mission] += sessad.distance[i][current_mission][next_mission];
-                                nb_mission[i][j][current_mission][next_mission] += 1;
-                                int mission_id = sessad.ConvertADayAndMissionNumberToMissionId(j,current_mission);
-                                
-                                if(sessad.employee[i].specialite.equals(sessad.mission[mission_id].specialite)) {
-                                    nb_mission_same_speciality[i][j][current_mission][next_mission] += 1;
-                                }
-                            }
-                        }
+            float distance = distance(ant_group.solution);
+            if(distance > max_distance) {
+                max_distance = distance;
+            }
+            if(distance < min_distance) {
+                min_distance = distance;
+            }
+        }
+
+
+        for(AntGroup ant_group : ants) {
+            float distance = distance(ant_group.solution);
+
+
+
+            int nb_mission = nb_mission(ant_group.solution);
+            int nb_mission_same_speciality = nb_mission_same_speciality(ant_group.solution);
+
+            for(int i = 0; i < ant_group.solution.length; i++) {
+                for(int j = 0; j < ant_group.solution[i].length; j++) {
+                    for(int k = 0; k < ant_group.solution[i][j].size() - 1; k++) {
+                        int current_mission = ant_group.solution[i][j].get(k);
+                        int next_mission = ant_group.solution[i][j].get(k+1);
+
+                        pheromone[j][current_mission][next_mission] += (1 - (distance - min_distance)/(max_distance - min_distance)) * 100 + nb_mission_same_speciality/nb_total_mission  + nb_mission/nb_total_mission*10000;
+                                                
                     }
                 }
             }
         }
 
-        float multiplier_distance = sessad.mission.length;
-        float multiplier_nb_mission = sessad.mission.length + multiplier_distance;
-        for(int i = 0; i < nb_jour; i++) {
-            for(int j = 0; j < sessad.employee.length; j++) {
-                int nb_possibilite = nb_mission_par_jour[i] + sessad.center_name.length;
-                for(int k = 0; k < nb_possibilite; k++) {
-                    for(int l = 0; l < nb_possibilite; l++) {
-                        if(nb_mission[i][j][k][l] != 0) {
-                            pheromone[i][j][k][l] += (nb_mission[i][j][k][l]) *multiplier_nb_mission + (1 / distance[i][j][k][l] + 1) * multiplier_distance + (nb_mission_same_speciality[i][j][k][l]);
-                        }
+        //Normalize the pheromone
+        float max = 0;
+        float min = Float.MAX_VALUE;
+
+        for(int j = 0; j < nb_jour; j++) {
+            int nb_possible_mission = nb_mission_par_jour[j] + sessad.center_name.length;
+            for(int k = 0; k < nb_possible_mission; k++) {
+                for(int l = 0; l < nb_possible_mission; l++) {
+                    if(pheromone[j][k][l] > max) {
+                        max = pheromone[j][k][l];
                     }
+                    if(pheromone[j][k][l] < min) {
+                        min = pheromone[j][k][l];
+                    }
+                }
+            }
+        }
+
+        min *= 0.9;
+
+        for(int j = 0; j < nb_jour; j++) {
+            int nb_possible_mission = nb_mission_par_jour[j] + sessad.center_name.length;
+            for(int k = 0; k < nb_possible_mission; k++) {
+                for(int l = 0; l < nb_possible_mission; l++) {
+                    pheromone[j][k][l] = (pheromone[j][k][l] - min) / (max - min);
                 }
             }
         }
