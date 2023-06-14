@@ -1,4 +1,5 @@
 package Problem;
+
 import java.awt.*;
 import java.io.BufferedReader;
 import java.io.File;
@@ -21,16 +22,14 @@ public class App {
     public static float[] parameter4Variations;
     public static float parameter5Variations;
     public static float elapsedTimeSec;
-    public static void main(String[] args) {
 
-        folder = "instances/66Missions-2centres/";
-    
-    public static ArrayList<Integer>[][]  solution;
+    public static ArrayList<Integer>[][] solution;
 
     //create getter and setter for antColony
-    public static ArrayList<Integer>[][]  getSolution() {
+    public static ArrayList<Integer>[][] getSolution() {
         return solution;
     }
+
     public static void main(String[] args) {
 
         String folder = "instances/200Missions-2centres/";
@@ -96,7 +95,7 @@ public class App {
                 String[] employeeData = line.split(csvSplitBy);
                 Employee employee = new Employee();
                 employee.setId(Integer.parseInt(employeeData[0]));
-                employee.setCenter_id(Integer.parseInt(employeeData[1])-1);
+                employee.setCenter_id(Integer.parseInt(employeeData[1]) - 1);
                 employee.setCompetence(employeeData[2]);
                 employee.setSpecialite(employeeData[3]);
                 employees.add(employee);
@@ -126,7 +125,7 @@ public class App {
         }
 
         int citiesCount = sessad.mission.length + sessad.center_name.length; // Assuming you have the number of cities
-                                                                             // specified
+        // specified
         Float[][] dm = new Float[citiesCount][citiesCount];
 
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
@@ -174,14 +173,14 @@ public class App {
 
 
         //Variation values for parameters 2-5
-        parameter2Variations = new int[] {10, 100, 1000, 10000};
+        parameter2Variations = new int[]{10/*, 100, 1000, 10000*/};
         parameter3Variations = 0.2f;
-        parameter4Variations = new float[] { 0.2f, 0.4f, 0.6f, 0.8f, 1f};
+        parameter4Variations = new float[]{0.2f/*, 0.4f, 0.6f, 0.8f, 1f*/};
         parameter5Variations = 0.0f;
 
         String outcsvFile = folder + "benchmark.csv";
         File file = new File(outcsvFile);
-        try{
+        try {
             if (!file.exists()) {
                 file.createNewFile();
                 FileWriter writer = new FileWriter(file);
@@ -189,25 +188,23 @@ public class App {
                 writer.close();
             }
 
-                                
-
             for (int parameter2 : parameter2Variations) {
-                for (float parmeter3=parameter3Variations; parmeter3<=1f; parmeter3+=0.2f) {
+                for (float parmeter3 = parameter3Variations; parmeter3 <= 1f; parmeter3 += /*0.2f*/ 5) {
                     for (float parameter4 : parameter4Variations) {
-                        for (float paramter5=parameter5Variations; paramter5<=1f; paramter5+=0.2f) {
+                        for (float paramter5 = parameter5Variations; paramter5 <= 1f; paramter5 += /*0.2f*/5) {
                             float sum_dist = 0;
                             float sum_time = 0;
                             float sum_nb_mission = 0;
                             float sum_nb_specialite = 0;
-                            for(int i=0; i<5; i++) {
+                            for (int g = 0; g < /*5*/1; g++) {
 
                                 AntColony antColony = new AntColony(sessad, parameter2, parmeter3, parameter4, paramter5);
-                                
-                                System.out.println("With praameters: nb_ant="+parameter2+", alpha="+parmeter3+", beta="+parameter4+", rho="+paramter5);
-                                
+
+                                System.out.println("With praameters: nb_ant=" + parameter2 + ", alpha=" + parmeter3 + ", beta=" + parameter4 + ", rho=" + paramter5);
+
                                 // starting a timer
                                 long startTime = System.currentTimeMillis();
-                                
+
                                 solution = antColony.solve(100, 120);
                                 // convert timer to seconds
                                 long elapsedTime = System.currentTimeMillis() - startTime;
@@ -217,34 +214,36 @@ public class App {
                                 sum_time += elapsedTimeSec;
                                 sum_nb_mission += antColony.nb_mission(solution);
                                 sum_nb_specialite += antColony.nb_mission_same_speciality(solution);
-                                
+
                                 System.out.println("Finished solving in " + elapsedTimeSec + " seconds");
 
                                 System.out.println("");
-                              
-                                for(int i = 0; i < solution.length; i++) {
+
+                                for (int i = 0; i < solution.length; i++) {
                                     System.out.print("Employee " + (i + 1) + ": \n");
-                                    for(int j = 0; j < solution[i].length; j++) {
+                                    for (int j = 0; j < solution[i].length; j++) {
                                         System.out.print("Day " + (j + 1) + ": \n");
-                                        for(int k = 0; k < solution[i][j].size(); k++) {
+                                        for (int k = 0; k < solution[i][j].size(); k++) {
                                             System.out.print(solution[i][j].get(k) + " \n");
                                         }
                                     }
                                     System.out.println();
                                 }
-                                LaunchUI.main();
                                 //Benchmark.main();
                             }
 
                             //Print the avarange and the parameters in a CSV file
                             FileWriter writer = new FileWriter(file, true);
-                            writer.write(parameter2+","+parmeter3+","+parameter4+","+paramter5+","+sum_dist/5+","+sum_time/5+","+sum_nb_mission/5+","+sum_nb_specialite/5+"\n");
+                            writer.write(parameter2 + "," + parmeter3 + "," + parameter4 + "," + paramter5 + "," + sum_dist / 5 + "," + sum_time / 5 + "," + sum_nb_mission / 5 + "," + sum_nb_specialite / 5 + "\n");
                             writer.close();
-                            
-        } catch (IOException e) {
-            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+            LaunchUI.main();
 
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
         }
     }
 }
-

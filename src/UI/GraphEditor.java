@@ -171,7 +171,7 @@ public class GraphEditor {
         label = new JLabel[color.length];
         for (int i = 0; i < color.length-1; i++) {
             //create a label to display text with the color
-            label[i] = new JLabel("Employee " + i+1);
+            label[i] = new JLabel("Employee " + (i + 1));
             label[i].setBounds(10, 50 + (i * 20) + osPadding, 100, 20);
             label[i].setForeground(color[i]);
             panel.add(label[i]);
