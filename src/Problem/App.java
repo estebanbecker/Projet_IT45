@@ -163,8 +163,8 @@ public class App {
 
         //Variation values for parameters 2-5
         parameter2Variations = new int[] {10, 100, 1000, 10000};
-        parameter3Variations = 0.0f;
-        parameter4Variations = new float[] { 0.0f, 0.2f, 0.4f, 0.6f, 0.8f, 1f};
+        parameter3Variations = 0.2f;
+        parameter4Variations = new float[] { 0.2f, 0.4f, 0.6f, 0.8f, 1f};
         parameter5Variations = 0.0f;
 
         String outcsvFile = folder + "benchmark.csv";
