@@ -4,6 +4,9 @@ import java.util.ArrayList;
 
 import Problem.SESSAD;
 
+import java.io.File;
+import java.io.FileWriter;
+
 public class AntColony {
     
     private SESSAD sessad;
@@ -93,9 +96,9 @@ public class AntColony {
             }
             if(improvement) {
                 nb_iteration_without_improvement = 0;
-                System.out.println("New best solution at iteration " + nb_iteration);
-                printSolution(best_solution);
-                System.out.println("");
+                // System.out.println("New best solution at iteration " + nb_iteration);
+                // printSolution(best_solution);
+                // System.out.println("");
             } else {
                 nb_iteration_without_improvement++;
             }
@@ -103,11 +106,11 @@ public class AntColony {
         }
         printSolution(best_solution);
 
-        System.out.println("Working time");
+        // System.out.println("Working time");
 
-        for(int i = 0; i<best_ant.ants.length; i++) {
-            System.out.println("Ant " + i + " : " + best_ant.ants[i].total_working_time);
-        }
+        // for(int i = 0; i<best_ant.ants.length; i++) {
+        //     System.out.println("Ant " + i + " : " + best_ant.ants[i].total_working_time);
+        // }
 
         System.out.println("Number of iteration : " + nb_iteration);
 

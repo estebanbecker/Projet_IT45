@@ -10,7 +10,7 @@ public class Benchmark {
         int[] parameter2Variations = Problem.App.parameter2Variations;
         float parameter3Variations = Problem.App.parameter3Variations;
         float[] parameter4Variations = Problem.App.parameter4Variations;
-        float parameter5 = Problem.App.parameter5;
+        float parameter5 = Problem.App.parameter5Variations;
         float elapsedTimeSec = Problem.App.elapsedTimeSec;
 
         // write those to a csv file if it doesn't exist
