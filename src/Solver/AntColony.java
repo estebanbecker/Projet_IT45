@@ -55,19 +55,31 @@ public class AntColony {
 
     public ArrayList<Integer>[][] solve(int teta, float maximum_time){
         initPheromone();
+
+        //Initialise the ArryList to Integer
+
+
+        //Initialise the counter for the limit condition
+        long current_mission_time = System.currentTimeMillis();
+        int nb_iteration_without_improvement = 0;
+
+        //Initialise the ants
+        Thread[] threads = new Thread[nb_ants];
+        ants = new AntGroup[nb_ants];
+
+        //Initialise the best solution
+        //dimension 0: employee
+        //dimension 1: day
+        //dimension 2: mission
         best_solution = new ArrayList[sessad.employee.length][nb_jour];
         for(int i = 0; i < sessad.employee.length; i++) {
             for(int j = 0; j < nb_jour; j++) {
                 best_solution[i][j] = new ArrayList<Integer>();
             }
         }
-        long current_mission_time = System.currentTimeMillis();
-        int nb_iteration_without_improvement = 0;
-        Thread[] threads = new Thread[nb_ants];
-
-        ants = new AntGroup[nb_ants];
-
         AntGroup best_ant = new AntGroup(sessad, nb_iteration_without_improvement, pheromone, current_mission_time, teta, nb_iteration_without_improvement);
+
+        
         int nb_iteration = 0;
         while((System.currentTimeMillis() - current_mission_time) /1000f < maximum_time && nb_iteration_without_improvement < teta) {
             nb_iteration++;
@@ -96,9 +108,9 @@ public class AntColony {
             }
             if(improvement) {
                 nb_iteration_without_improvement = 0;
-                // System.out.println("New best solution at iteration " + nb_iteration);
-                // printSolution(best_solution);
-                // System.out.println("");
+                System.out.println("New best solution at iteration " + nb_iteration);
+                printSolution(best_solution);
+                System.out.println("");
             } else {
                 nb_iteration_without_improvement++;
             }

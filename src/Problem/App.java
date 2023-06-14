@@ -22,7 +22,7 @@ public class App {
     public static float elapsedTimeSec;
     public static void main(String[] args) {
 
-        folder = "instances/200Missions-2centres/";
+        folder = "instances/66Missions-2centres/";
         String csvFile = folder + "distances.csv";
         String line;
         String csvSplitBy = ",";
@@ -164,8 +164,8 @@ public class App {
         //Variation values for parameters 2-5
         parameter2Variations = new int[] {10, 100, 1000, 10000};
         parameter3Variations = 0.0f;
-        parameter4Variations = new float[] { 0f, 0.2f, 0.4f, 0.6f, 0.8f, 1f};
-        parameter5Variations = 0f;
+        parameter4Variations = new float[] { 0.0f, 0.2f, 0.4f, 0.6f, 0.8f, 1f};
+        parameter5Variations = 0.0f;
 
         String outcsvFile = folder + "benchmark.csv";
         File file = new File(outcsvFile);
@@ -182,7 +182,7 @@ public class App {
             for (int parameter2 : parameter2Variations) {
                 for (float parmeter3=parameter3Variations; parmeter3<=1f; parmeter3+=0.2f) {
                     for (float parameter4 : parameter4Variations) {
-                        for (float paramter5=parameter5Variations; paramter5<1f; paramter5+=0.2f) {
+                        for (float paramter5=parameter5Variations; paramter5<=1f; paramter5+=0.2f) {
                             float sum_dist = 0;
                             float sum_time = 0;
                             float sum_nb_mission = 0;
