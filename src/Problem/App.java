@@ -32,7 +32,7 @@ public class App {
 
     public static void main(String[] args) {
 
-        String folder = "instances/200Missions-2centres/";
+        folder = "instances/200Missions-2centres/";
         String csvFile = folder + "distances.csv";
         String line;
         String csvSplitBy = ",";

@@ -2,6 +2,7 @@ package UI;
 
 import Graph.Node;
 import PathFinder.IntFloatList;
+import Problem.SESSAD;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -10,6 +11,8 @@ import java.util.Objects;
 
 public class Draw {
     private final Graphics2D g2d;
+
+    String[] centers = SESSAD.getCenter_name();
 
     public Draw(Graphics2D new_g2d) {
         this.g2d = new_g2d;
@@ -155,7 +158,13 @@ public class Draw {
             g2d.setColor(new Color(0, 100, 0));
             g2d.fillOval(x1 - 5, y1 - 5, 10, 10);
             g2d.setColor(Color.BLACK);
-            g2d.drawString(Integer.toString(node.getId()), x1 + 10, y1);
+            g2d.drawString(Integer.toString(node.getId()+1), x1 + 10, y1);
+            for(int i=0; i< centers.length; i++){
+                if(i==node.getId()){
+                    g2d.setColor(new Color(213, 82, 102, 255));
+                    g2d.fillOval(x1 - 10, y1 - 10, 20, 20);
+                }
+            }
         }
     }
 }

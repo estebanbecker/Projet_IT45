@@ -23,13 +23,6 @@ public class LaunchUI {
         sleep(1000);
         UI.main();
         Graph graph1 = new Graph();
-        Graph graph2 = new Graph();
-        Graph graph3 = new Graph();
-        Graph graph4 = new Graph();
-        Graph graph5 = new Graph();
-
-        //array of graphs
-        Graph[] graphs = {graph1, graph2, graph3, graph4, graph5};
 
         //use the getter for coordinates
         double[][] coordinates = UI.getCoordinates();
@@ -44,12 +37,13 @@ public class LaunchUI {
 
 
         //create an array of random colors for each employee
+        //make sure those colors are earthy colors
         colors = new Color[solution.length];
         for (int i = 0; i < solution.length; i++) {
             Random rand = new Random();
-            float r = rand.nextFloat();
-            float g = rand.nextFloat();
-            float b = rand.nextFloat();
+            float r = rand.nextFloat() / 2f + 0.5f;
+            float g = rand.nextFloat() / 2f + 0.5f;
+            float b = rand.nextFloat() / 2f + 0.5f;
             colors[i] = new Color(r, g, b);
         }
 
