@@ -1,19 +1,20 @@
 package Problem;
-
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
+
+import App.LaunchUI;
 
 import Benchmark.Benchmark;
 import Solver.AntColony;
 
 public class App {
+
     public static String folder;
     public static int[] parameter2Variations;
     public static float parameter3Variations;
@@ -23,6 +24,16 @@ public class App {
     public static void main(String[] args) {
 
         folder = "instances/66Missions-2centres/";
+    
+    public static ArrayList<Integer>[][]  solution;
+
+    //create getter and setter for antColony
+    public static ArrayList<Integer>[][]  getSolution() {
+        return solution;
+    }
+    public static void main(String[] args) {
+
+        String folder = "instances/200Missions-2centres/";
         String csvFile = folder + "distances.csv";
         String line;
         String csvSplitBy = ",";
@@ -161,6 +172,7 @@ public class App {
 
         System.out.println("Finished loading data");
 
+
         //Variation values for parameters 2-5
         parameter2Variations = new int[] {10, 100, 1000, 10000};
         parameter3Variations = 0.2f;
@@ -196,7 +208,7 @@ public class App {
                                 // starting a timer
                                 long startTime = System.currentTimeMillis();
                                 
-                                ArrayList<Integer>[][] solution = antColony.solve(100, 120);
+                                solution = antColony.solve(100, 120);
                                 // convert timer to seconds
                                 long elapsedTime = System.currentTimeMillis() - startTime;
                                 elapsedTimeSec = elapsedTime / 1000F;
@@ -209,7 +221,18 @@ public class App {
                                 System.out.println("Finished solving in " + elapsedTimeSec + " seconds");
 
                                 System.out.println("");
-
+                              
+                                for(int i = 0; i < solution.length; i++) {
+                                    System.out.print("Employee " + (i + 1) + ": \n");
+                                    for(int j = 0; j < solution[i].length; j++) {
+                                        System.out.print("Day " + (j + 1) + ": \n");
+                                        for(int k = 0; k < solution[i][j].size(); k++) {
+                                            System.out.print(solution[i][j].get(k) + " \n");
+                                        }
+                                    }
+                                    System.out.println();
+                                }
+                                LaunchUI.main();
                                 //Benchmark.main();
                             }
 
@@ -218,13 +241,10 @@ public class App {
                             writer.write(parameter2+","+parmeter3+","+parameter4+","+paramter5+","+sum_dist/5+","+sum_time/5+","+sum_nb_mission/5+","+sum_nb_specialite/5+"\n");
                             writer.close();
                             
-                        }
-                    }
-                }
-            }
         } catch (IOException e) {
             e.printStackTrace();
 
         }
     }
 }
+
