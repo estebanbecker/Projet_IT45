@@ -1,16 +1,29 @@
 package Problem;
 import java.awt.*;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 import java.util.List;
 
 import App.LaunchUI;
 
+import Benchmark.Benchmark;
 import Solver.AntColony;
 
 public class App {
+
+    public static String folder;
+    public static int[] parameter2Variations;
+    public static float parameter3Variations;
+    public static float[] parameter4Variations;
+    public static float parameter5Variations;
+    public static float elapsedTimeSec;
+    public static void main(String[] args) {
+
+        folder = "instances/66Missions-2centres/";
     
     public static ArrayList<Integer>[][]  solution;
 
@@ -83,7 +96,7 @@ public class App {
                 String[] employeeData = line.split(csvSplitBy);
                 Employee employee = new Employee();
                 employee.setId(Integer.parseInt(employeeData[0]));
-                employee.setCenter_id(Integer.parseInt(employeeData[1]));
+                employee.setCenter_id(Integer.parseInt(employeeData[1])-1);
                 employee.setCompetence(employeeData[2]);
                 employee.setSpecialite(employeeData[3]);
                 employees.add(employee);
@@ -159,57 +172,79 @@ public class App {
 
         System.out.println("Finished loading data");
 
-        // Variation values for parameters 2-5
-        int[] parameter2Variations = {10, 100, 1000, 10000};
-        float parameter3Variations = 0.8f;
-        float[] parameter4Variations = { 1f, 0.9f, 0.85f, 0.8f };
-        float parameter5 = 0f;
-/*
-        for (int parameter2 : parameter2Variations) {
-            for (float i=parameter3Variations; i<10f; i+=0.5f) {
-                for (float parameter4 : parameter4Variations) {
-                    for (float j=parameter5; j<1f; j+=0.1f) {*/
-                        try {
 
-                            AntColony antColony = new AntColony(sessad, 1000, 1f, 1f, 0.5f);
-                            
-                            System.out.println("Starting to solve");
-                            
-                            // starting a timer
-                            long startTime = System.currentTimeMillis();
-                            
-                            solution = antColony.solve(10, 120);
-                            // convert timer to seconds
-                            long elapsedTime = System.currentTimeMillis() - startTime;
-                            float elapsedTimeSec = elapsedTime / 1000F;
+        //Variation values for parameters 2-5
+        parameter2Variations = new int[] {10, 100, 1000, 10000};
+        parameter3Variations = 0.2f;
+        parameter4Variations = new float[] { 0.2f, 0.4f, 0.6f, 0.8f, 1f};
+        parameter5Variations = 0.0f;
 
-
-                            //add for loop for solution[i][j].get(k)
-
-                            for(int i = 0; i < solution.length; i++) {
-                                System.out.print("Employee " + (i + 1) + ": \n");
-                                for(int j = 0; j < solution[i].length; j++) {
-                                    System.out.print("Day " + (j + 1) + ": \n");
-                                    for(int k = 0; k < solution[i][j].size(); k++) {
-                                        System.out.print(solution[i][j].get(k) + " \n");
-                                    }
-                                }
-                                System.out.println();
-                            }
-                            //
-                            //System.out.println("Params used " + parameter2 + " " + i + " " + parameter4 + " " + j);
-                            System.out.println("Finished solving in " + elapsedTimeSec + " seconds");
-
-
-                            LaunchUI.main();
-                            
-                            
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }/* 
-                }
+        String outcsvFile = folder + "benchmark.csv";
+        File file = new File(outcsvFile);
+        try{
+            if (!file.exists()) {
+                file.createNewFile();
+                FileWriter writer = new FileWriter(file);
+                writer.write("nb_ant,alpha,beta,rho,distance,time,nb_mission,nb_specialite\n");
+                writer.close();
             }
-        }*/
 
+                                
+
+            for (int parameter2 : parameter2Variations) {
+                for (float parmeter3=parameter3Variations; parmeter3<=1f; parmeter3+=0.2f) {
+                    for (float parameter4 : parameter4Variations) {
+                        for (float paramter5=parameter5Variations; paramter5<=1f; paramter5+=0.2f) {
+                            float sum_dist = 0;
+                            float sum_time = 0;
+                            float sum_nb_mission = 0;
+                            float sum_nb_specialite = 0;
+                            for(int i=0; i<5; i++) {
+
+                                AntColony antColony = new AntColony(sessad, parameter2, parmeter3, parameter4, paramter5);
+                                
+                                System.out.println("With praameters: nb_ant="+parameter2+", alpha="+parmeter3+", beta="+parameter4+", rho="+paramter5);
+                                
+                                // starting a timer
+                                long startTime = System.currentTimeMillis();
+                                
+                                solution = antColony.solve(100, 120);
+                                // convert timer to seconds
+                                long elapsedTime = System.currentTimeMillis() - startTime;
+                                elapsedTimeSec = elapsedTime / 1000F;
+
+                                sum_dist += antColony.distance(solution);
+                                sum_time += elapsedTimeSec;
+                                sum_nb_mission += antColony.nb_mission(solution);
+                                sum_nb_specialite += antColony.nb_mission_same_speciality(solution);
+                                
+                                System.out.println("Finished solving in " + elapsedTimeSec + " seconds");
+
+                                System.out.println("");
+                              
+                                for(int i = 0; i < solution.length; i++) {
+                                    System.out.print("Employee " + (i + 1) + ": \n");
+                                    for(int j = 0; j < solution[i].length; j++) {
+                                        System.out.print("Day " + (j + 1) + ": \n");
+                                        for(int k = 0; k < solution[i][j].size(); k++) {
+                                            System.out.print(solution[i][j].get(k) + " \n");
+                                        }
+                                    }
+                                    System.out.println();
+                                }
+                                LaunchUI.main();
+                                //Benchmark.main();
+                            }
+
+                            //Print the avarange and the parameters in a CSV file
+                            FileWriter writer = new FileWriter(file, true);
+                            writer.write(parameter2+","+parmeter3+","+parameter4+","+paramter5+","+sum_dist/5+","+sum_time/5+","+sum_nb_mission/5+","+sum_nb_specialite/5+"\n");
+                            writer.close();
+                            
+        } catch (IOException e) {
+            e.printStackTrace();
+
+        }
     }
+}
+
