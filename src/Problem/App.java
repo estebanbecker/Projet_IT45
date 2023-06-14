@@ -196,7 +196,7 @@ public class App {
                                 // starting a timer
                                 long startTime = System.currentTimeMillis();
                                 
-                                ArrayList<Integer>[][] solution = antColony.solve(50, 120);
+                                ArrayList<Integer>[][] solution = antColony.solve(100, 120);
                                 // convert timer to seconds
                                 long elapsedTime = System.currentTimeMillis() - startTime;
                                 elapsedTimeSec = elapsedTime / 1000F;
