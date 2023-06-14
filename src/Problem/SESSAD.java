@@ -9,7 +9,7 @@ public class SESSAD {
 
     public Mission[] mission;
 
-    public String[] center_name;
+    public static String[] center_name;
 
     public Employee[] employee;
 
@@ -23,6 +23,11 @@ public class SESSAD {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+
+    public static String[] getCenter_name() {
+        return center_name;
     }
 
     @Override
