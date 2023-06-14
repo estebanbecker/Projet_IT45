@@ -7,7 +7,7 @@ import Graph.Node;
 import PathFinder.Dijkstra;
 import PathFinder.IntFloatList;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
-import App.App;
+import App.LaunchUI;
 
 import javax.swing.*;
 import java.awt.*;
@@ -123,7 +123,7 @@ public class GraphEditor {
 
         newItem.addActionListener(e -> {
             // Handle the "New" action
-            App.restartProgram(new Graph());
+            LaunchUI.restartProgram(new Graph());
         });
         fileMenu.add(newItem);
 
@@ -144,7 +144,7 @@ public class GraphEditor {
                     Files open_file = new Files(path.toString());
                     Graph new_graph = open_file.readFile();
 
-                    App.restartProgram(new_graph);
+                    LaunchUI.restartProgram(new_graph);
                     frame.dispose();
                 }
             } catch (Exception ex) {
@@ -620,7 +620,7 @@ public class GraphEditor {
                                     if (edgeName != null && !edgeName.isEmpty()) {
                                         System.out.println(edgeName);
                                         graph.connectUnidirectionalNodes(clickednodes.get(0).getId(),
-                                                clickednodes.get(1).getId(), edgeName);
+                                                clickednodes.get(1).getId(), edgeName, Color.BLACK);
                                         repaint();
                                     }
                                     // clear the clicked nodes

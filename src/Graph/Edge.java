@@ -1,5 +1,7 @@
 package Graph;
 
+import java.awt.*;
+
 public class Edge {
     
     public float weight;
@@ -10,11 +12,14 @@ public class Edge {
 
     public Integer node_id_to;
 
-    public Edge(float w, String l, Integer node_id_from, Integer node_id_to) {
+    public Color color;
+
+    public Edge(float w, String l, Integer node_id_from, Integer node_id_to, Color color) {
         this.weight = w;
         this.label = l;
         this.node_id_from = node_id_from;
         this.node_id_to = node_id_to;
+        this.color = color;
     }
 
     public Integer getNodeToId() {
@@ -27,6 +32,10 @@ public class Edge {
 
     public String getLabel() {
         return label;
+    }
+
+    public Color getColor() {
+        return color;
     }
 }
 

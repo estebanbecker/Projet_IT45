@@ -58,21 +58,23 @@ public class Draw {
 
         }
 
-        texte_rectangle(x1, y1, x2, y2, "distance: " + result.getFloatValue().toString() + " units", 2, "purple");
+        texte_rectangle(x1, y1, x2, y2, "distance: " + result.getFloatValue().toString() + " units", 2, Color.ORANGE);
 
     }
 
     // position 2 is halfway, 1 at base and 3 at a third
-    public void texte_rectangle(int x1, int y1, int x2, int y2, String text, int position, String colorname) {
-        Color color = new Color(241, 97, 8, 190);
-        Color border = new Color(147, 60, 10, 255);
-        if (Objects.equals(colorname, "purple")) {
-            color = new Color(152, 70, 255, 194);
-            border = new Color(81, 45, 110, 255);
-        } else if (Objects.equals(colorname, "orange")) {
-            color = new Color(241, 97, 8, 190);
-            border = new Color(147, 60, 10, 255);
+    public void texte_rectangle(int x1, int y1, int x2, int y2, String text, int position, Color color2) {
+        Color color = color2;
+        Color color3;
+        //get color 2 and make it transparent
+        if(color2.getRed()>10 && color2.getGreen()>10 && color2.getBlue()>10){
+            color3= new Color(color2.getRed()-10, color2.getGreen()-10, color2.getBlue()-10, 255);
+        }else{
+            color3 = color2;
         }
+
+        Color border = color3;
+
         // draw string with distance
         g2d.setColor(new Color(0, 0, 0, 255));
         g2d.setFont(new Font("Helvetica", Font.BOLD, 14));
@@ -108,14 +110,14 @@ public class Draw {
                 if (neighborNode != null) {
                     int x2 = Math.round(neighborNode.getPosition()[0]);
                     int y2 = Math.round(neighborNode.getPosition()[1]);
-                    arrow(x1, x2, y1, y2);
-                    texte_rectangle(x1, y1, x2, y2, node.getEdges().get(neighborId).getLabel(), 3, "orange");
+                    arrow(x1, x2, y1, y2, node.getEdges().get(neighborId).getColor());
+                    texte_rectangle(x1, y1, x2, y2, node.getEdges().get(neighborId).getLabel(), 3, node.getEdges().get(neighborId).getColor());
                 }
             }
         }
     }
 
-    public void arrow(int x1, int x2, int y1, int y2) {
+    public void arrow(int x1, int x2, int y1, int y2, Color color2) {
 
         double angle = Math.atan2(y2 - y1, x2 - x1);
 
@@ -126,9 +128,11 @@ public class Draw {
         int startY = y1 + (int) (Math.sin(angle) * nodeRadius);
         int endX = x2 - (int) (Math.cos(angle) * nodeRadius);
         int endY = y2 - (int) (Math.sin(angle) * nodeRadius);
+        //get color2 change opacity
+        color2 = new Color(color2.getRed(), color2.getGreen(), color2.getBlue(), 140);
 
         // Draw line with padding between the start and end of node
-        g2d.setColor(new Color(241, 97, 8, 30));
+        g2d.setColor(color2);
         g2d.drawLine(startX, startY, endX, endY);
         // Print the weight with a little padding (5 pixels)
         // Draw arrow

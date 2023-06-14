@@ -1,5 +1,6 @@
 package Graph;
 
+import java.awt.*;
 import java.util.HashMap;
 
 public class Node {
@@ -32,8 +33,8 @@ public class Node {
         return id;
     }
 
-    public void addEdge(Integer node_to_id, String label, Float weight) {
-        Edge edge = new Edge(weight, label, this.id, node_to_id);
+    public void addEdge(Integer node_to_id, String label, Float weight, Color color) {
+        Edge edge = new Edge(weight, label, this.id, node_to_id, color);
         edges.put(node_to_id, edge);
     }
 

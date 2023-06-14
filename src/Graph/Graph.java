@@ -1,5 +1,6 @@
 package Graph;
 
+import java.awt.*;
 import java.util.HashMap;
 import java.util.ArrayList;
 
@@ -51,14 +52,14 @@ public class Graph {
      * @param node_to_id         The id of the node to which the edge ends
      * @param label         The label of the edge
      */
-    public void connectUnidirectionalNodes(Integer node_from_id, Integer node_to_id, String label) {
+    public void connectUnidirectionalNodes(Integer node_from_id, Integer node_to_id, String label, Color color) {
         Node node_from = nodes.get(node_from_id);
         Node node_to = nodes.get(node_to_id);
 
         Float weight = (float) Math.sqrt(Math.pow(node_from.position[0] - node_to.position[0], 2)
                 + Math.pow(node_from.position[1] - node_to.position[1], 2));
 
-        node_from.addEdge(node_to_id, label, weight);
+        node_from.addEdge(node_to_id, label, weight, color);
     }
 
     /**
@@ -67,15 +68,15 @@ public class Graph {
      * @param node2     The id of the other node that will be connected
      * @param label     The label of the edge
      */
-    public void connectBidirectionalNodes(Integer node1, Integer node2, String label) {
+    public void connectBidirectionalNodes(Integer node1, Integer node2, String label, Color color) {
         Node node_from = nodes.get(node1);
         Node node_to = nodes.get(node2);
 
         Float weight = (float) Math.sqrt(Math.pow(node_from.position[0] - node_to.position[0], 2)
                 + Math.pow(node_from.position[1] - node_to.position[1], 2));
 
-        node_from.addEdge(node2, label, weight);
-        node_to.addEdge(node1, label, weight);
+        node_from.addEdge(node2, label, weight, color);
+        node_to.addEdge(node1, label, weight, color);
     }
 
     /**
@@ -84,9 +85,9 @@ public class Graph {
      * @param node_to_id    The ids of the nodes to which the edges end
      * @param label        The labels of the edges
      */
-    public void createEdges(Integer[] node_from_id, Integer[] node_to_id, String[] label) {
+    public void createEdges(Integer[] node_from_id, Integer[] node_to_id, String[] label, Color[] color) {
         for (int i = 0; i < node_from_id.length; i++) {
-            connectUnidirectionalNodes(node_from_id[i], node_to_id[i], label[i]);
+            connectUnidirectionalNodes(node_from_id[i], node_to_id[i], label[i], color[i]);
         }
     }
 

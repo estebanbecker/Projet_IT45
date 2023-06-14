@@ -1,19 +1,26 @@
 package Problem;
-
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
+
+import App.LaunchUI;
 
 import Solver.AntColony;
 
 public class App {
+    
+    public static ArrayList<Integer>[][]  solution;
+
+    //create getter and setter for antColony
+    public static ArrayList<Integer>[][]  getSolution() {
+        return solution;
+    }
     public static void main(String[] args) {
 
-        String folder = "instances/150Missions-2centres/";
+        String folder = "instances/200Missions-2centres/";
         String csvFile = folder + "distances.csv";
         String line;
         String csvSplitBy = ",";
@@ -157,35 +164,52 @@ public class App {
         float parameter3Variations = 0.8f;
         float[] parameter4Variations = { 1f, 0.9f, 0.85f, 0.8f };
         float parameter5 = 0f;
-
+/*
         for (int parameter2 : parameter2Variations) {
             for (float i=parameter3Variations; i<10f; i+=0.5f) {
                 for (float parameter4 : parameter4Variations) {
-                    for (float j=parameter5; j<1f; j+=0.1f) {
+                    for (float j=parameter5; j<1f; j+=0.1f) {*/
                         try {
 
-                            AntColony antColony = new AntColony(sessad, parameter2, i, parameter4, j);
+                            AntColony antColony = new AntColony(sessad, 1000, 1f, 1f, 0.5f);
                             
                             System.out.println("Starting to solve");
                             
                             // starting a timer
                             long startTime = System.currentTimeMillis();
                             
-                            ArrayList<Integer>[][] solution = antColony.solve(10, 120);
+                            solution = antColony.solve(10, 120);
                             // convert timer to seconds
                             long elapsedTime = System.currentTimeMillis() - startTime;
                             float elapsedTimeSec = elapsedTime / 1000F;
-                            
-                            System.out.println("Params used " + parameter2 + " " + i + " " + parameter4 + " " + j);
+
+
+                            //add for loop for solution[i][j].get(k)
+
+                            for(int i = 0; i < solution.length; i++) {
+                                System.out.print("Employee " + (i + 1) + ": \n");
+                                for(int j = 0; j < solution[i].length; j++) {
+                                    System.out.print("Day " + (j + 1) + ": \n");
+                                    for(int k = 0; k < solution[i][j].size(); k++) {
+                                        System.out.print(solution[i][j].get(k) + " \n");
+                                    }
+                                }
+                                System.out.println();
+                            }
+                            //
+                            //System.out.println("Params used " + parameter2 + " " + i + " " + parameter4 + " " + j);
                             System.out.println("Finished solving in " + elapsedTimeSec + " seconds");
+
+
+                            LaunchUI.main();
+                            
                             
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                    }
+                    }/* 
                 }
             }
-        }
+        }*/
 
     }
-}

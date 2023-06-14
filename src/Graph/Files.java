@@ -1,5 +1,6 @@
 package Graph;
 
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.BufferedWriter;
@@ -24,6 +25,7 @@ public class Files {
     private ArrayList<Integer> id_node_to = new ArrayList<>();
     private ArrayList<String> label = new ArrayList<>();
 
+    private ArrayList<Color> color = new ArrayList<>();
 
 
 
@@ -101,9 +103,10 @@ public class Files {
         Integer[] id_node_from_array = id_node_from.toArray(new Integer[id_node_from.size()]);
         Integer[] id_node_to_array = id_node_to.toArray(new Integer[id_node_to.size()]);
         String[] label_array = label.toArray(new String[label.size()]);
+        Color[] color_array = (Color[]) color.toArray()[color.size()];
 
         Graph read_graph = new Graph(id_array,x_array,y_array);                     //Creating a new graph with the values read
-        read_graph.createEdges(id_node_from_array,id_node_to_array,label_array);
+        read_graph.createEdges(id_node_from_array,id_node_to_array,label_array, color_array);
 
         return read_graph;
     }
