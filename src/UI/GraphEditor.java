@@ -116,68 +116,6 @@ public class GraphEditor {
         panel.setLayout(null);
         frame.getContentPane().add(panel);
 
-        JMenuBar menuBar = new JMenuBar();
-        JMenu fileMenu = new JMenu("File");
-
-        JMenuItem newItem = new JMenuItem("New");
-
-        newItem.addActionListener(e -> {
-            // Handle the "New" action
-            LaunchUI.restartProgram(new Graph());
-        });
-        fileMenu.add(newItem);
-
-        JMenuItem openItem = new JMenuItem("Open");
-        openItem.addActionListener(e -> {
-            // Handle the "Open" action
-            // load the system file chooser
-            try {
-                JFileChooser fileChooser = new JFileChooser();
-                // native file picker
-                fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
-                int result = fileChooser.showOpenDialog(frame);
-                if (result == JFileChooser.APPROVE_OPTION) {
-                    File selectedFile = fileChooser.getSelectedFile();
-                    System.out.println("Selected file: " + selectedFile.getAbsolutePath());
-                    Path path = Paths.get(selectedFile.getAbsolutePath());
-
-                    Files open_file = new Files(path.toString());
-                    Graph new_graph = open_file.readFile();
-
-                    LaunchUI.restartProgram(new_graph);
-                    frame.dispose();
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        });
-        fileMenu.add(openItem);
-
-        JMenuItem saveItem = new JMenuItem("Save");
-        saveItem.addActionListener(e -> {
-            // Handle the "Save" action
-            try {
-                JFileChooser fileChooser = new JFileChooser();
-                fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
-                int result = fileChooser.showOpenDialog(frame);
-                if (result == JFileChooser.APPROVE_OPTION) {
-                    File selectedFile = fileChooser.getSelectedFile();
-                    System.out.println("Selected file: " + selectedFile.getAbsolutePath());
-                    Path path = Paths.get(selectedFile.getAbsolutePath());
-
-                    Files save_file = new Files(path.toString());
-                    save_file.writeFile(panel.graph);
-
-                    panel.repaint();
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        });
-        fileMenu.add(saveItem);
-
-        menuBar.add(fileMenu);
-        frame.setJMenuBar(menuBar);
 
         JCheckBox snap = new JCheckBox("Snap to grid");
         snap.setBounds(10, 15 + osPadding, 500, 20);
@@ -191,15 +129,6 @@ public class GraphEditor {
         });
         panel.add(snap);
 
-        JButton fab = new JButton("+ add node");
-        fab.setHorizontalTextPosition(SwingConstants.CENTER);
-        fab.setFocusPainted(false);
-        fab.addActionListener(e -> {
-            if (e.getSource() == fab) {
-                addNodeOnClick(panel, graph, snap.isSelected());
-            }
-        });
-        // add a checkbox for snapping
 
         // Add a ComponentListener to reset FAB position on window resize
         frame.addComponentListener(new ComponentAdapter() {
@@ -223,14 +152,9 @@ public class GraphEditor {
                 int fabX = frameWidth - fabWidth - padding - winpadding;
                 int fabY = frameHeight - fabHeight - padding - platform + osPadding;
 
-                fab.setBounds(fabX, fabY, fabWidth, fabHeight);
             }
         });
-        fab.setBounds(10, 10, 100, 20);
-        fab.setBackground(new Color(97, 37, 168));
-        fab.setForeground(Color.WHITE);
-        fab.setFocusPainted(false);
-        fab.setFont(new Font("Arial", Font.BOLD, 20));
+
         // Set the initial position of the FAB
         int fabWidth = 140;
         int fabHeight = 50;
@@ -240,74 +164,20 @@ public class GraphEditor {
         int fabX = frameWidth - fabWidth - padding;
         int fabY = frameHeight - fabHeight - padding;
 
-        fab.setBounds(fabX, fabY, fabWidth, fabHeight);
+        
+        
+        Color[] color = LaunchUI.getColors();
+        JLabel[] label = null;
+        label = new JLabel[color.length];
+        for (int i = 0; i < color.length-1; i++) {
+            //create a label to display text with the color
+            label[i] = new JLabel("Employee " + i+1);
+            label[i].setBounds(10, 50 + (i * 20) + osPadding, 100, 20);
+            label[i].setForeground(color[i]);
+            panel.add(label[i]);
 
-        // add two buttons with an eyedropper icon that allow the user to select a node
-        Node[] pathway_nodes = new Node[2];
+        }
 
-        JButton selectNode = new JButton("From:");
-        JButton selectNode2 = new JButton("To:");
-
-        selectNode.setBounds(10, 50 + osPadding, 120, 30);
-        selectNode2.setBounds(10, 80 + osPadding, 120, 30);
-
-        selectNode.addActionListener(e -> NodeSelectionHelper.selectNode(panel).thenAccept(node -> {
-            System.out.println("Selected node: " + node);
-            pathway_nodes[0] = node;
-            selectNode.setText(node.getId().toString());
-            if (Objects.equals(selectNode2.getText(), "To:")) {
-                selectNode2.doClick();
-            }
-        }));
-        selectNode2.addActionListener(e -> NodeSelectionHelper.selectNode(panel).thenAccept(node -> {
-            System.out.println("Selected node: " + node);
-            pathway_nodes[1] = node;
-            selectNode2.setText(node.getId().toString());
-        }));
-
-        panel.add(selectNode);
-        panel.add(selectNode2);
-
-        // add an eye dropper icon on the side of the button
-        ImageIcon eyeDropperIcon = new ImageIcon("AP4B_project/asset/eyedropper.png"); // Replace "eye_dropper_icon.png"
-                                                                                       // with
-        // the actual path or resource name
-        // scale the icon
-        Image img = eyeDropperIcon.getImage();
-        Image newimg = img.getScaledInstance(15, 15, java.awt.Image.SCALE_SMOOTH);
-        eyeDropperIcon = new ImageIcon(newimg);
-
-        // put the icon to the very right
-        selectNode.setHorizontalTextPosition(SwingConstants.LEFT);
-        selectNode2.setHorizontalTextPosition(SwingConstants.LEFT);
-        // Set the eye dropper icon to the button
-        selectNode.setIcon(eyeDropperIcon);
-        selectNode2.setIcon(eyeDropperIcon);
-
-        // Create "Go" button
-        JButton goButton = new JButton("go");
-        goButton.setBackground(new Color(54, 143, 39));
-        goButton.setForeground(Color.WHITE);
-        goButton.setBounds(10, 110 + osPadding, 70, 50);
-
-        goButton.addActionListener(e -> {
-            result = null;
-            Dijkstra solver = new Dijkstra();
-            try {
-                result = solver.findShortestPath(graph, pathway_nodes[0].getId(), pathway_nodes[1].getId());
-            } catch (Exception Error) {
-                // Handle the exception and show an error message
-                String errorMessage = "An error occurred: " + Error.getMessage();
-
-                // Show the error message to the user
-                JOptionPane.showMessageDialog(null, errorMessage, "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        });
-        panel.add(goButton);
-
-        // if result =! null, create a text area and display the result
-
-        panel.add(fab);
 
         frame.pack();
         frame.setVisible(true);
@@ -489,45 +359,6 @@ public class GraphEditor {
             // Add mouse listener for hovering over nodes make them bigger and show their
             // name
 
-            addMouseMotionListener(new MouseAdapter() {
-
-                Node big;
-
-                public void mouseMoved(MouseEvent e) {
-                    // Check if a node is clicked and assign it to selectedNode
-                    selectedNode = findClickedNode(mouseX, mouseY);
-                    big = selectedNode;
-                    setDragged(0);
-
-                }
-
-                public void mouseDragged(MouseEvent e) {
-                    if (big != null) {
-                        // setDragged to 1
-                        setDragged(1);
-                        // System.out.println("dragged");
-                        // Calculate the mouse movement delta
-
-                        if (SwingUtilities.isLeftMouseButton(e)) {
-
-                            super.mouseClicked(e);
-                            int x = (int) ((e.getX() - getOffsetX()) / getScale());
-                            int y = (int) ((e.getY() - getOffsetY()) / getScale());
-
-                            if (getSnap()) {
-                                x = (x + 25) / 50 * 50;
-                                y = (y + 25) / 50 * 50;
-                            }
-                            // Repaint the panel
-                            removeMouseListener(this);
-                            repaint();
-                            graph.updatePosition(big.getId(), (float) x, (float) y);
-                            clickednodes.clear();
-                        }
-                    }
-                }
-
-            });
 
             addMouseMotionListener(new MouseMotionAdapter() {
 

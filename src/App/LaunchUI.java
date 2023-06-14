@@ -13,6 +13,12 @@ import java.util.Random;
 
 public class LaunchUI {
 
+    public static Color[] colors;
+
+    public static Color[] getColors() {
+        return colors;
+    }
+
     public static void main() throws InterruptedException {
         sleep(1000);
         UI.main();
@@ -38,7 +44,7 @@ public class LaunchUI {
 
 
         //create an array of random colors for each employee
-        Color[] colors = new Color[solution.length];
+        colors = new Color[solution.length];
         for (int i = 0; i < solution.length; i++) {
             Random rand = new Random();
             float r = rand.nextFloat();
