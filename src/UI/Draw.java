@@ -155,7 +155,7 @@ public class Draw {
             g2d.setColor(new Color(0, 100, 0));
             g2d.fillOval(x1 - 5, y1 - 5, 10, 10);
             g2d.setColor(Color.BLACK);
-            g2d.drawString(Integer.toString(node.getId()), x1 + 10, y1);
+            g2d.drawString(Integer.toString(node.getId()+1), x1 + 10, y1);
         }
     }
 }

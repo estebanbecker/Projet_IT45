@@ -5,8 +5,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-
-
+import static Problem.App.folder;
 
 
 public class UI {
@@ -29,7 +28,8 @@ public class UI {
                 {15.805, 2.1135, 17.907, 0}
         };
 
-        String csvFilePath = "instances/150Missions-2centres/distances.csv";
+        String csvFilePath = folder + "distances.csv";
+
 
         distances = null;
 
