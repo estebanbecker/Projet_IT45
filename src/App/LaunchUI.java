@@ -1,6 +1,7 @@
 package App;
 
 import Graph.Graph;
+import Problem.App;
 
 import javax.swing.*;
 
@@ -50,7 +51,19 @@ public class LaunchUI {
         for(int i = 0; i < solution.length; i++) {
             for(int j = 0; j < solution[i].length; j++) {
                 for(int k = 0; k < solution[i][j].size()-1; k++) {
-                    graph1.connectUnidirectionalNodes(solution[i][j].get(k), solution[i][j].get(k + 1), "Day " + (j + 1) + "", colors[i]);
+                    int from;
+                    int to;
+                    if(solution[i][j].get(k)>=App.sessad.center_name.length){
+                        from = App.sessad.ConvertADayAndMissionNumberToMissionId(j, solution[i][j].get(k) - App.sessad.center_name.length)+App.sessad.center_name.length;
+                    }else{
+                        from = solution[i][j].get(k);
+                    }
+                    if(solution[i][j].get(k+1)>=App.sessad.center_name.length){
+                        to = App.sessad.ConvertADayAndMissionNumberToMissionId(j, solution[i][j].get(k+1) - App.sessad.center_name.length)+App.sessad.center_name.length;
+                    }else{
+                        to = solution[i][j].get(k+1);
+                    }
+                    graph1.connectUnidirectionalNodes(from, to, "Day " + (j + 1) + "", colors[i]);
                 }
             }
             //System.out.println();

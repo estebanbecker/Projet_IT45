@@ -25,6 +25,8 @@ public class App {
 
     public static ArrayList<Integer>[][] solution;
 
+    public static SESSAD sessad;
+
     //create getter and setter for antColony
     public static ArrayList<Integer>[][] getSolution() {
         return solution;
@@ -90,7 +92,7 @@ public class App {
         String csvFile = folder + "distances.csv";
         String line;
         String csvSplitBy = ",";
-        SESSAD sessad = new SESSAD();
+        sessad = new SESSAD();
 
         String csvFile2 = folder + "Missions.csv";
         List<Mission> Missions = new ArrayList<>();
