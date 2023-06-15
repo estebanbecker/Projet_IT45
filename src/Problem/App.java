@@ -35,6 +35,11 @@ public class App {
         String folderPath = "instances/";
         File instanceFolder = new File(folderPath);
         File[] listOfFiles = instanceFolder.listFiles();
+        //if the folder is empty, exit the program
+        if (listOfFiles.length == 0) {
+            System.out.println("No instances found. Exiting the program.");
+            return;
+        }
         Arrays.sort(listOfFiles, Comparator.comparingInt(o -> Integer.parseInt(o.getName().split("Missions")[0])));
         int o = 0;
         //check if valid, folder contains centers.csv, distances.csv, missions.csv and employees.csv
