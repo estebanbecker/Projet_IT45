@@ -232,7 +232,7 @@ public class App {
         float alpha = 0.95f;
         float beta = 0.01f;
         float rho = 0.8f;
-        int teta = 1000;
+        int teta = 200;
         int max_time = 120;
         
         try{
