@@ -35,6 +35,7 @@ public class App {
         String folderPath = "instances/";
         File instanceFolder = new File(folderPath);
         File[] listOfFiles = instanceFolder.listFiles();
+        Arrays.sort(listOfFiles, Comparator.comparingInt(o -> Integer.parseInt(o.getName().split("Missions")[0])));
         int o = 0;
         //check if valid, folder contains centers.csv, distances.csv, missions.csv and employees.csv
         for (File file : listOfFiles) {
