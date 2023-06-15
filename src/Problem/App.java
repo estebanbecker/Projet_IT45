@@ -305,7 +305,11 @@ public class App {
                                         System.out.format("%-10s", "Shift " + (k + 1));
                                         for (int i = 0; i < solution.length; i++) {
                                             if (j < solution[i].length && k < solution[i][j].size()) {
-                                                System.out.format("%-10s", solution[i][j].get(k) + 1);
+                                                if(solution[i][j].get(k) >= sessad.center_name.length){
+                                                    System.out.format("%-10s", sessad.ConvertADayAndMissionNumberToMissionId(j, solution[i][j].get(k)-sessad.center_name.length)+1);
+                                                }else{
+                                                    System.out.format("%-10s", sessad.center_name[solution[i][j].get(k)]);
+                                                }
                                             } else {
                                                 System.out.format("%-10s", "");
                                             }
