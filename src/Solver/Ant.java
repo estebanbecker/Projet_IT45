@@ -218,7 +218,7 @@ public class Ant {
         }
         if(current_mission == center_id) {
             return true;
-        }
+        }//check that the employee will not be late for the mission
         if(endofmission(current_mission) + sessad.distance[day][current_mission][mission_id]/SPEED> startofmission(mission_id)){
             return false;
         }
