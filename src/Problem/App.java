@@ -228,114 +228,79 @@ public class App {
         System.out.println("Finished loading data");
 
 
-        //Variation values for parameters 2-5
-        parameter2Variations = new int[]{10/*, 100, 1000, 10000*/};
-        parameter3Variations = 0.2f;
-        parameter4Variations = new float[]{0.2f/*, 0.4f, 0.6f, 0.8f, 1f*/};
-        parameter5Variations = 0.0f;
+        int nb_ants = 200;
+        float alpha = 0.95f;
+        float beta = 0.01f;
+        float rho = 0.8f;
+        int teta = 1000;
+        int max_time = 120;
+        
+        try{
+            AntColony antColony = new AntColony(sessad, nb_ants, alpha, beta, rho);
 
-        String outcsvFile = folder + "benchmark.csv";
-        File file = new File(outcsvFile);
-        try {
-            if (!file.exists()) {
-                file.createNewFile();
-                FileWriter writer = new FileWriter(file);
-                writer.write("nb_ant,alpha,beta,rho,distance,time,nb_mission,nb_specialite\n");
-                writer.close();
-            }
+            // starting a timer
+            long startTime = System.currentTimeMillis();
 
-            for (int parameter2 : parameter2Variations) {
-                for (float parmeter3 = parameter3Variations; parmeter3 <= 1f; parmeter3 += /*0.2f*/ 5) {
-                    for (float parameter4 : parameter4Variations) {
-                        for (float paramter5 = parameter5Variations; paramter5 <= 1f; paramter5 += /*0.2f*/5) {
-                            float sum_dist = 0;
-                            float sum_time = 0;
-                            float sum_nb_mission = 0;
-                            float sum_nb_specialite = 0;
-                            for (int g = 0; g < /*5*/1; g++) {
+            solution = antColony.solve(teta, max_time);
+            // convert timer to seconds
+            long elapsedTime = System.currentTimeMillis() - startTime;
+            elapsedTimeSec = elapsedTime / 1000F;
 
-                                AntColony antColony = new AntColony(sessad, parameter2, parmeter3, parameter4, paramter5);
+            System.out.println("Finished solving in " + elapsedTimeSec + " seconds");
 
-                                System.out.println("With praameters: nb_ant=" + parameter2 + ", alpha=" + parmeter3 + ", beta=" + parameter4 + ", rho=" + paramter5);
+            System.out.println("");
 
-                                // starting a timer
-                                long startTime = System.currentTimeMillis();
-
-                                solution = antColony.solve(100, 120);
-                                // convert timer to seconds
-                                long elapsedTime = System.currentTimeMillis() - startTime;
-                                elapsedTimeSec = elapsedTime / 1000F;
-
-                                sum_dist += antColony.distance(solution);
-                                sum_time += elapsedTimeSec;
-                                sum_nb_mission += antColony.nb_mission(solution);
-                                sum_nb_specialite += antColony.nb_mission_same_speciality(solution);
-
-                                System.out.println("Finished solving in " + elapsedTimeSec + " seconds");
-
-                                System.out.println("");
-
-                                for (int i = 0; i < solution.length; i++) {
-                                    System.out.print("Employee " + (i + 1) + ": \n");
-                                    for (int j = 0; j < solution[i].length; j++) {
-                                        System.out.print("Day " + (j + 1) + ": \n");
-                                        for (int k = 0; k < solution[i][j].size(); k++) {
-                                            System.out.print(solution[i][j].get(k) + " \n");
-                                        }
-                                    }
-                                    System.out.println();
-                                }
-                                //Benchmark.main();
-                                //}
-                                int maxDays = solution[0].length;
-                                int maxShifts = 0;
-                                for (int i = 0; i < solution.length; i++) {
-                                    for (int j = 0; j < solution[i].length; j++){
-                                        if (solution[i][j].size() > maxShifts) {
-                                            maxShifts = solution[i][j].size();
-                                        }
-                                    } 
-                                }
-
-                                System.out.print("         ");
-                                for (int i = 0; i < solution.length; i++) {
-                                    System.out.format("%-10s", " " + (i + 1));
-                                }
-                                System.out.println();
-
-                                for (int j = 0; j < maxDays; j++) {
-                                    System.out.println("Day " + (j + 1) + ":");
-
-                                    for (int k = 0; k < maxShifts; k++) {
-                                        System.out.format("%-10s", "Shift " + (k + 1));
-                                        for (int i = 0; i < solution.length; i++) {
-                                            if (j < solution[i].length && k < solution[i][j].size()) {
-                                                if(solution[i][j].get(k) >= sessad.center_name.length){
-                                                    System.out.format("%-10s", sessad.ConvertADayAndMissionNumberToMissionId(j, solution[i][j].get(k)-sessad.center_name.length)+1);
-                                                }else{
-                                                    System.out.format("%-10s", sessad.center_name[solution[i][j].get(k)]);
-                                                }
-                                            } else {
-                                                System.out.format("%-10s", "");
-                                            }
-                                        }
-                                        System.out.println();
-                                    }
-                                    System.out.println();
-                                }
-                            }
-
-                            //Print the avarange and the parameters in a CSV file
-                            FileWriter writer = new FileWriter(file, true);
-                            writer.write(parameter2 + "," + parmeter3 + "," + parameter4 + "," + paramter5 + "," + sum_dist / 5 + "," + sum_time / 5 + "," + sum_nb_mission / 5 + "," + sum_nb_specialite / 5 + "\n");
-                            writer.close();
-                        }
+            for (int i = 0; i < solution.length; i++) {
+                System.out.print("Employee " + (i + 1) + ": \n");
+                for (int j = 0; j < solution[i].length; j++) {
+                    System.out.print("Day " + (j + 1) + ": \n");
+                    for (int k = 0; k < solution[i][j].size(); k++) {
+                        System.out.print(solution[i][j].get(k) + " \n");
                     }
                 }
+                System.out.println();
+            }
+            //Benchmark.main();
+            //}
+            int maxDays = solution[0].length;
+            int maxShifts = 0;
+            for (int i = 0; i < solution.length; i++) {
+                for (int j = 0; j < solution[i].length; j++){
+                    if (solution[i][j].size() > maxShifts) {
+                        maxShifts = solution[i][j].size();
+                    }
+                } 
+            }
+
+            System.out.print("         ");
+            for (int i = 0; i < solution.length; i++) {
+                System.out.format("%-10s", " " + (i + 1));
+            }
+            System.out.println();
+
+            for (int j = 0; j < maxDays; j++) {
+                System.out.println("Day " + (j + 1) + ":");
+
+                for (int k = 0; k < maxShifts; k++) {
+                    System.out.format("%-10s", "Shift " + (k + 1));
+                    for (int i = 0; i < solution.length; i++) {
+                        if (j < solution[i].length && k < solution[i][j].size()) {
+                            if(solution[i][j].get(k) >= sessad.center_name.length){
+                                System.out.format("%-10s", sessad.ConvertADayAndMissionNumberToMissionId(j, solution[i][j].get(k)-sessad.center_name.length)+1);
+                            }else{
+                                System.out.format("%-10s", sessad.center_name[solution[i][j].get(k)]);
+                            }
+                        } else {
+                            System.out.format("%-10s", "");
+                        }
+                    }
+                    System.out.println();
+                }
+                System.out.println();
+                            
             }
             LaunchUI.main();
-
-        } catch (IOException | InterruptedException e) {
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
