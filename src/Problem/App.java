@@ -22,7 +22,7 @@ public class App {
     public static float elapsedTimeSec;
     public static void main(String[] args) {
 
-        folder = "instances/66Missions-2centres/";
+        folder = "instances/150Missions-2centres/";
         String csvFile = folder + "distances.csv";
         String line;
         String csvSplitBy = ",";
@@ -167,7 +167,7 @@ public class App {
         parameter4Variations = new float[] { 0.2f, 0.4f, 0.6f, 0.8f, 1f};
         parameter5Variations = 0.0f;
 
-        String outcsvFile = folder + "benchmark.csv";
+        String outcsvFile ="benchmark.csv";
         File file = new File(outcsvFile);
         try{
             if (!file.exists()) {
@@ -179,49 +179,49 @@ public class App {
 
                                 
 
-            for (int parameter2 : parameter2Variations) {
-                for (float parmeter3=parameter3Variations; parmeter3<=1f; parmeter3+=0.2f) {
-                    for (float parameter4 : parameter4Variations) {
-                        for (float paramter5=parameter5Variations; paramter5<=1f; paramter5+=0.2f) {
-                            float sum_dist = 0;
-                            float sum_time = 0;
-                            float sum_nb_mission = 0;
-                            float sum_nb_specialite = 0;
-                            for(int i=0; i<5; i++) {
+           
+            float sum_dist = 0;
+            float sum_time = 0;
+            float sum_nb_mission = 0;
+            float sum_nb_specialite = 0;
+            int parameter2 = 200;
+            float parmeter3 = 0.95f;
+            float parameter4 = 0.01f;
+            float paramter5 = 0.8f;
+            int teta = 200;
 
-                                AntColony antColony = new AntColony(sessad, parameter2, parmeter3, parameter4, paramter5);
-                                
-                                System.out.println("With praameters: nb_ant="+parameter2+", alpha="+parmeter3+", beta="+parameter4+", rho="+paramter5);
-                                
-                                // starting a timer
-                                long startTime = System.currentTimeMillis();
-                                
-                                ArrayList<Integer>[][] solution = antColony.solve(100, 120);
-                                // convert timer to seconds
-                                long elapsedTime = System.currentTimeMillis() - startTime;
-                                elapsedTimeSec = elapsedTime / 1000F;
+            for(int i=0; i<10; i++) {
 
-                                sum_dist += antColony.distance(solution);
-                                sum_time += elapsedTimeSec;
-                                sum_nb_mission += antColony.nb_mission(solution);
-                                sum_nb_specialite += antColony.nb_mission_same_speciality(solution);
-                                
-                                System.out.println("Finished solving in " + elapsedTimeSec + " seconds");
+                AntColony antColony = new AntColony(sessad, parameter2, parmeter3, parameter4, paramter5);
+                
+                System.out.println("With praameters: nb_ant="+parameter2+", alpha="+parmeter3+", beta="+parameter4+", rho="+paramter5);
+                
+                // starting a timer
+                long startTime = System.currentTimeMillis();
+                
+                ArrayList<Integer>[][] solution = antColony.solve(teta, 600);
+                // convert timer to seconds
+                long elapsedTime = System.currentTimeMillis() - startTime;
+                elapsedTimeSec = elapsedTime / 1000F;
 
-                                System.out.println("");
+                sum_dist += antColony.distance(solution);
+                sum_time += elapsedTimeSec;
+                sum_nb_mission += antColony.nb_mission(solution);
+                sum_nb_specialite += antColony.nb_mission_same_speciality(solution);
+                
+                System.out.println("Finished solving in " + elapsedTimeSec + " seconds");
 
-                                //Benchmark.main();
-                            }
+                System.out.println("");
 
-                            //Print the avarange and the parameters in a CSV file
-                            FileWriter writer = new FileWriter(file, true);
-                            writer.write(parameter2+","+parmeter3+","+parameter4+","+paramter5+","+sum_dist/5+","+sum_time/5+","+sum_nb_mission/5+","+sum_nb_specialite/5+"\n");
-                            writer.close();
-                            
-                        }
-                    }
-                }
+                //Benchmark.main();
             }
+
+            //Print the avarange and the parameters in a CSV file
+            FileWriter writer = new FileWriter(file, true);
+            writer.write(folder+","+sum_dist/10+","+sum_time/10+","+sum_nb_mission/10+","+sum_nb_specialite/10+"\n");
+            writer.close();
+            
+                        
         } catch (IOException e) {
             e.printStackTrace();
 
