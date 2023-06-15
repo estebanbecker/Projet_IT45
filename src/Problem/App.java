@@ -32,7 +32,55 @@ public class App {
 
     public static void main(String[] args) {
 
-        folder = "instances/200Missions-2centres/";
+        String folderPath = "instances/";
+        File instanceFolder = new File(folderPath);
+        File[] listOfFiles = instanceFolder.listFiles();
+        int o = 0;
+        //check if valid, folder contains centers.csv, distances.csv, missions.csv and employees.csv
+        for (File file : listOfFiles) {
+            if (file.isDirectory()) {
+                File[] filesInFolder = file.listFiles();
+                boolean containsCenters = false;
+                boolean containsDistances = false;
+                boolean containsMissions = false;
+                boolean containsEmployees = false;
+
+                for (File subFile : filesInFolder) {
+                    String fileName = subFile.getName();
+                    if (fileName.equals("centers.csv") || fileName.equals("Centers.csv") || fileName.equals("centres.csv") || fileName.equals("Centres.csv")) {
+                        containsCenters = true;
+                    } else if (fileName.equals("distances.csv") || fileName.equals("Distances.csv")){
+                        containsDistances = true;
+                    } else if (fileName.equals("missions.csv") || fileName.equals("Missions.csv")){
+                        containsMissions = true;
+                    } else if (fileName.equals("employees.csv") || fileName.equals("Employees.csv")){
+                        containsEmployees = true;
+                    }
+                }
+
+                if (containsCenters && containsDistances && containsMissions && containsEmployees) {
+                    System.out.println("[" + o + "] " + file.getName());
+                    o++;
+                }
+            }
+        }
+        // Get user input for the instance to run
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter the number of the instance you want to run: ");
+        int instance = scanner.nextInt();
+
+        if (instance < 0 || instance >= listOfFiles.length) {
+            System.out.println("Invalid instance number. Exiting the program.");
+            return;
+        }
+
+        // Get the folder name of the instance to run
+        String instanceFolderName = listOfFiles[instance].getName();
+        // Get the folder path of the instance to run
+        folder = folderPath + instanceFolderName + "/";
+
+
+        //folder = "instances/200Missions-2centres/";
         String csvFile = folder + "distances.csv";
         String line;
         String csvSplitBy = ",";
@@ -230,7 +278,7 @@ public class App {
                                     System.out.println();
                                 }
                                 //Benchmark.main();
-                            //}
+                                //}
                                 int maxDays = solution[0].length;
                                 int maxShifts = 0;
                                 for (int i = 0; i < solution.length; i++) {
@@ -251,7 +299,7 @@ public class App {
                                         System.out.format("%-10s", "Shift " + (k + 1));
                                         for (int i = 0; i < solution.length; i++) {
                                             if (j < solution[i].length && k < solution[i][j].size()) {
-                                                System.out.format("%-10s", solution[i][j].get(k)+1);
+                                                System.out.format("%-10s", solution[i][j].get(k) + 1);
                                             } else {
                                                 System.out.format("%-10s", "");
                                             }
