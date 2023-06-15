@@ -120,17 +120,20 @@ public class UI {
             for (int i = 0; i < numNodes; i++) {
                 coordinates[i][0] = coordinates[i][0] * 1000 / maxX;
                 coordinates[i][1] = coordinates[i][1] * 1000 / maxY;
+
             }
+
+
             // Cool temperature
             temperature *= (1.0 - iteration / maxIterations);
 
 
         }
-
+        /*
         // Print the final coordinates
         for (int i = 0; i < numNodes; i++) {
             System.out.printf("Node %d: (%f, %f)%n", i, coordinates[i][0], coordinates[i][1]);
-        }
+        }*/
     }
 
 

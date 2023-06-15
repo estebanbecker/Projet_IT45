@@ -230,6 +230,36 @@ public class App {
                                     System.out.println();
                                 }
                                 //Benchmark.main();
+                            //}
+                                int maxDays = solution[0].length;
+                                int maxShifts = 0;
+                                for (int i = 0; i < solution.length; i++) {
+                                    if (solution[i][0].size() > maxShifts) {
+                                        maxShifts = solution[i][0].size();
+                                    }
+                                }
+                                System.out.print("         ");
+                                for (int i = 0; i < solution.length; i++) {
+                                    System.out.format("%-10s", " " + (i + 1));
+                                }
+                                System.out.println();
+
+                                for (int j = 0; j < maxDays; j++) {
+                                    System.out.println("Day " + (j + 1) + ":");
+
+                                    for (int k = 0; k < maxShifts; k++) {
+                                        System.out.format("%-10s", "Shift " + (k + 1));
+                                        for (int i = 0; i < solution.length; i++) {
+                                            if (j < solution[i].length && k < solution[i][j].size()) {
+                                                System.out.format("%-10s", solution[i][j].get(k)+1);
+                                            } else {
+                                                System.out.format("%-10s", "");
+                                            }
+                                        }
+                                        System.out.println();
+                                    }
+                                    System.out.println();
+                                }
                             }
 
                             //Print the avarange and the parameters in a CSV file

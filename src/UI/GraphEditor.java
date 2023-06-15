@@ -170,7 +170,7 @@ public class GraphEditor {
         JLabel[] label = null;
         label = new JLabel[color.length];
         Color modifiedcolor=null;
-        for (int i = 0; i < color.length-1; i++) {
+        for (int i = 0; i < color.length; i++) {
             Color c = color[i];
             modifiedcolor = c.darker();
             //create a label to display text with the color

@@ -53,7 +53,7 @@ public class LaunchUI {
                     graph1.connectUnidirectionalNodes(solution[i][j].get(k), solution[i][j].get(k + 1), "Day " + (j + 1) + "", colors[i]);
                 }
             }
-            System.out.println();
+            //System.out.println();
         }
 
 
