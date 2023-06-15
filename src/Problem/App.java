@@ -290,10 +290,13 @@ public class App {
                                 int maxDays = solution[0].length;
                                 int maxShifts = 0;
                                 for (int i = 0; i < solution.length; i++) {
-                                    if (solution[i][0].size() > maxShifts) {
-                                        maxShifts = solution[i][0].size();
-                                    }
+                                    for (int j = 0; j < solution[i].length; j++){
+                                        if (solution[i][j].size() > maxShifts) {
+                                            maxShifts = solution[i][j].size();
+                                        }
+                                    } 
                                 }
+
                                 System.out.print("         ");
                                 for (int i = 0; i < solution.length; i++) {
                                     System.out.format("%-10s", " " + (i + 1));
