@@ -50,6 +50,7 @@ public class AntGroup implements Runnable{
      */
     public void run() {
 
+        //Initialize the done matrix
         boolean[][] done = new boolean[nb_jour][];
 
         for(int i = 0; i < nb_jour; i++) {
@@ -59,17 +60,18 @@ public class AntGroup implements Runnable{
             }
         }
 
+        //Run the ants for each employee
         for (Ant ant : ants) {
             ant.run(done);
         }
 
         solution = new ArrayList[ants.length][];
 
+        //Get the solution for each employee
         for (Ant ant : ants) {
             solution[ant.id] = ant.mission_done;
         }
 
-        //solution = sessad.make_it_valid(solution);
 
     }
 
