@@ -1,13 +1,12 @@
-package UI;
+package GraphUI.UI;
 
-import Graph.Node;
-import PathFinder.IntFloatList;
+import GraphUI.Graph.Node;
+import GraphUI.PathFinder.IntFloatList;
 import Problem.SESSAD;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Objects;
 
 public class Draw {
     private final Graphics2D g2d;

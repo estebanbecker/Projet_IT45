@@ -1,18 +1,21 @@
-## Getting Started
+# IT45 projet
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
 
-## Folder Structure
+![Screenshot 2023-06-16 at 17.44.48](https://i.imgur.com/837nlIr.png)
 
-The workspace contains two folders by default, where:
+## Comment exécuter
 
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
+```bash
+$ java -jar IT45.jar
+```
 
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
+Le fichier `IT45.jar` doit être dans le dossier du projet, afin d'accéder au répertoire instance. Pour charger une instance, veuillez placer un dossier instance valide contant les CSV dans ce dossier
 
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
+L'exécutable contient déjà les dépendances nécessaires pour l'exécution du programme.
 
-## Dependency Management
+Si vous souhaitez compiler le projet, veuillez rajouter les 2 dépendances suivantes :
+- flatlaf-3.11.jar
+- commons-math3-3.6.1.jar
+Ces dépendances sont disponibles dans le dossier `lib` du projet. Elles sont ajoutées automatiquement depuis Maven sous IntelliJ.
 
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+Note: Le programme a été testé avec la version 20 du SDK Java.

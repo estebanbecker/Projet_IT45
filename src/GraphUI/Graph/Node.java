@@ -1,4 +1,4 @@
-package Graph;
+package GraphUI.Graph;
 
 import java.awt.*;
 import java.util.HashMap;

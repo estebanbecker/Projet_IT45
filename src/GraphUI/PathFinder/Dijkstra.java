@@ -1,6 +1,6 @@
-package PathFinder;
+package GraphUI.PathFinder;
 
-import Graph.Graph;
+import GraphUI.Graph.Graph;
 
 import java.util.PriorityQueue;
 import java.util.ArrayList;

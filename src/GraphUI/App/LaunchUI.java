@@ -1,10 +1,11 @@
-package App;
+package GraphUI.App;
 
-import Graph.Graph;
+import GraphUI.Graph.Graph;
+import Problem.App;
 
 import javax.swing.*;
 
-import static UI.GraphEditor.createAndShowGUI;
+import static GraphUI.UI.GraphEditor.createAndShowGUI;
 import static java.lang.Thread.sleep;
 
 import java.awt.*;
@@ -21,6 +22,7 @@ public class LaunchUI {
 
     public static void main() throws InterruptedException {
         sleep(1000);
+        //We prepare the coordinates: extracting from the distance CSV, we compute from the relative positions an estimated position of nodes next to another based on repulsion
         UI.main();
         Graph graph1 = new Graph();
 
@@ -47,18 +49,32 @@ public class LaunchUI {
             colors[i] = new Color(r, g, b);
         }
 
+        //Parsing through the solution array found by the Ant Solver
         for(int i = 0; i < solution.length; i++) {
             for(int j = 0; j < solution[i].length; j++) {
                 for(int k = 0; k < solution[i][j].size()-1; k++) {
-                    graph1.connectUnidirectionalNodes(solution[i][j].get(k), solution[i][j].get(k + 1), "Day " + (j + 1) + "", colors[i]);
+                    int from;
+                    int to;
+                    if(solution[i][j].get(k)>=App.sessad.center_name.length){
+                        from = App.sessad.ConvertADayAndMissionNumberToMissionId(j, solution[i][j].get(k) - App.sessad.center_name.length)+App.sessad.center_name.length;
+                    }else{
+                        from = solution[i][j].get(k);
+                    }
+                    if(solution[i][j].get(k+1)>=App.sessad.center_name.length){
+                        to = App.sessad.ConvertADayAndMissionNumberToMissionId(j, solution[i][j].get(k+1) - App.sessad.center_name.length)+App.sessad.center_name.length;
+                    }else{
+                        to = solution[i][j].get(k+1);
+                    }
+                    //Creating an edge from the previous location to the next
+                    graph1.connectUnidirectionalNodes(from, to, "Day " + (j + 1) + "", colors[i]);
                 }
             }
-            System.out.println();
+            //System.out.println();
         }
 
 
 
-
+        //Calling the GUI through this function allows us to have a distinct AWT UI thread from the computing threads.
         SwingUtilities.invokeLater(() -> {
             createAndShowGUI(graph1);
         });

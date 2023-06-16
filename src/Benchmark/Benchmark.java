@@ -5,7 +5,7 @@ import java.io.FileWriter;
 
 public class Benchmark {
     public static void main() throws Exception {
-        // get parameters from App.java
+        // get parameters from GraphUI.App.java
         String folder = Problem.App.folder;
         int[] parameter2Variations = Problem.App.parameter2Variations;
         float parameter3Variations = Problem.App.parameter3Variations;
