@@ -32,6 +32,12 @@ public class SESSAD {
                 '}';
     }
 
+    /**
+     * Compare two solutions and return true or false if the first one is better than the second one
+     * @param solution1
+     * @param solution2
+     * @return
+     */
     public boolean is_it_better(ArrayList<Integer>[][] solution1, ArrayList<Integer>[][] solution2) {
 
         // Check the number of missions in each solution
@@ -117,6 +123,11 @@ public class SESSAD {
 
     }
 
+    /**
+     * Convert a mission that isn't valid to a valid mission
+     * @param solution  The solution to repair
+     * @return  The repaired solution
+     */
     public ArrayList<Integer>[][] make_it_valid(ArrayList<Integer>[][] solution) {
         // Check that each mission is done maximum one time
         for (int i = 0; i < solution.length; i++) {
@@ -136,6 +147,16 @@ public class SESSAD {
         return solution;
     }
 
+    /**
+     * Repair a solution by removing a mission from one of the two employees
+     * @param solution  The solution to repair
+     * @param i1    The first employee
+     * @param i2    The second employee
+     * @param j The day
+     * @param k1    The mission to remove from the first employee
+     * @param k2    The mission to remove from the second employee
+     * @return
+     */
     public ArrayList<Integer>[][] repair(ArrayList<Integer>[][] solution, int i1, int i2, int j, int k1, int k2) {
 
         // make two deep copies of the solution
@@ -156,6 +177,11 @@ public class SESSAD {
         }
     }
 
+    /**
+     * Make a deep copy of a solution
+     * @param originalArray The solution to copy
+     * @return  The copy of the solution
+     */
     public ArrayList<Integer>[][] deepcopy(ArrayList<Integer>[][] originalArray) {
 
         // create a new array with the same dimensions as the original array
@@ -172,6 +198,12 @@ public class SESSAD {
         return newArray;
     }
 
+    /**
+     * Convert a day and a mission number to a mission id
+     * @param day   The day
+     * @param mission_number    The mission number this day
+     * @return  The global mission id
+     */
     public Integer ConvertADayAndMissionNumberToMissionId(int day, int mission_number) {
         return this.missionPerDay[day][mission_number]-1;
     }

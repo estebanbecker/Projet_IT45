@@ -191,7 +191,8 @@ public class App {
             int teta = 200;
 
             for(int i=0; i<10; i++) {
-
+                
+                //Initialize the solver
                 AntColony antColony = new AntColony(sessad, parameter2, parmeter3, parameter4, paramter5);
                 
                 System.out.println("With praameters: nb_ant="+parameter2+", alpha="+parmeter3+", beta="+parameter4+", rho="+paramter5);
@@ -199,6 +200,7 @@ public class App {
                 // starting a timer
                 long startTime = System.currentTimeMillis();
                 
+                //Lauch the solver
                 ArrayList<Integer>[][] solution = antColony.solve(teta, 600);
                 // convert timer to seconds
                 long elapsedTime = System.currentTimeMillis() - startTime;

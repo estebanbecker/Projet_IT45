@@ -43,7 +43,17 @@ public class Ant {
 
     private boolean first_mission;
 
-
+    /**
+     * Initialize an ant
+     * @param sessad    The problem
+     * @param id    The id of the ant
+     * @param pheromone The pheromone matrix
+     * @param competence    The competence of the ant
+     * @param specialite    The speciality of the ant
+     * @param alpha The alpha parameter
+     * @param beta  The beta parameter
+     * @param nb_jour   The number of days
+     */
     public Ant(SESSAD sessad, int id, float pheromone[][][], String competence, String specialite, float alpha, float beta, int nb_jour) {
         this.sessad = sessad;
         this.id = id;
@@ -58,29 +68,37 @@ public class Ant {
         nb_centres = sessad.center_name.length;
     }
 
+    /**
+     * Run the ant
+     * @param done  The matrix of the missions done by the other ants
+     */
     public void run(boolean[][] done) { 
 
         this.done = done;
 
 
-        
+        // Initialize the mission_done matrix
         mission_done = new ArrayList[nb_jour];
         for(int i = 0; i < nb_jour; i++) {
             mission_done[i] = new ArrayList<Integer>();
         }
 
+        // Initialize the total_working_time
         total_working_time = 0;
 
+        //Run the ant for each day
         for(day = 0; day < nb_jour; day++) {
             float today_working_time = 0;
             float starting_time = -1;
             int current_mission = center_id;
             first_mission = true;
 
+            // Set the max distance
             set_max_distance();
 
             mission_done[day].add(center_id);
             do{
+                // Choose the next mission
                 current_mission = chooseMission(current_mission, today_working_time, total_working_time, starting_time, pheromone[day]);
                 if(current_mission == -1) {
                     break;
@@ -92,6 +110,7 @@ public class Ant {
                     }
                 }
 
+                // Update the working time
                 if(current_mission == center_id) {
                     today_working_time += sessad.distance[day][mission_done[day].get(mission_done[day].size() - 1)][current_mission]/(SPEED);
                     total_working_time += sessad.distance[day][mission_done[day].get(mission_done[day].size() - 1)][current_mission]/(SPEED);
@@ -101,13 +120,14 @@ public class Ant {
                     total_working_time += sessad.distance[day][mission_done[day].get(mission_done[day].size() - 1)][current_mission]/(SPEED)+sessad.mission[total_current_mission].end_time-sessad.mission[total_current_mission].start_time;
                 }
                 
-                
+                // Add the mission to the mission_done matrix
                 mission_done[day].add(current_mission);
+                // Add the mission to the done matrix
                 if(current_mission >= sessad.center_name.length){
                     done[day][current_mission-sessad.center_name.length] = true;    
                 }            
                 
-
+            //While the employee hasn't returned to the center
             }while(current_mission != center_id);
             
 
@@ -117,6 +137,9 @@ public class Ant {
 
     }
 
+    /**
+     * Set the max distance
+     */
     private void set_max_distance() {
         float max = 0;
         for(int i = 0; i < sessad.distance[day].length; i++) {
@@ -135,6 +158,7 @@ public class Ant {
      * @param today_working_time    The time that the employee has already worked today
      * @param total_working_time    The time that the employee has already worked this week
      * @param start_time    The time that the employee started working today
+     * @param today_pheromone   The pheromone matrix of the current day
      * @return  The id of the mission that the employee will do next
      */
     private int chooseMission(int current_mission, float today_working_time, float total_working_time, float starting_time, float today_pheromone[][]) {
@@ -142,6 +166,7 @@ public class Ant {
         float sum = 0;
         float[] proba = new float[sessad.distance[day].length];
         
+        // Calculate the probability of each mission
         for (int i = 0; i < sessad.distance[day].length; i++) {
             if(isMissionPossible(current_mission,i , today_working_time, total_working_time , starting_time)) {
                 if(center_id == i) {
@@ -156,11 +181,12 @@ public class Ant {
             }
         }
 
-        //initialize randiom
+        //initialize random
         Random random = new Random();
 
         float rand = (float) (random.nextFloat()) * sum;
 
+        // Choose the mission according to the probability and the random
         if(sum == 0) {
             return -1;
         }
@@ -248,16 +274,32 @@ public class Ant {
         return (float) (sessad.mission[mission_id_day].end_time + sessad.distance[day][mission_id][center_id]/(SPEED));
     }
 
+    /**
+     * Calculate the ending time of a mission
+     * @param mission_id    The mission that we want to know the ending time    
+     * @return  The ending time of the mission
+     */
     private float endofmission(int mission_id) {
         int mission_id_day = sessad.ConvertADayAndMissionNumberToMissionId(day, mission_id-sessad.center_name.length);
         return (float) (sessad.mission[mission_id_day].end_time);
     }
 
+    /**
+     * Calculate the starting time of a mission
+     * @param mission_id    The mission that we want to know the starting time
+     * @return  The starting time of the mission
+     */
     private float startofmission(int mission_id) {
         int mission_id_day = sessad.ConvertADayAndMissionNumberToMissionId(day, mission_id-sessad.center_name.length);
         return (float) (sessad.mission[mission_id_day].start_time);
     }
 
+    /**
+     * Calculate the heuristic of a mission
+     * @param current_mission   The mission that the employee is currently doing
+     * @param mission_id    The mission that we want to know the heuristic
+     * @return  The heuristic of the mission
+     */
     private float heuristic(int current_mission, int mission_id) {
         float distance = sessad.distance[day][current_mission][mission_id];
         float ending_time = endofmission(mission_id);
