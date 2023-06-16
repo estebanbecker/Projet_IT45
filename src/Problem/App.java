@@ -40,6 +40,10 @@ public class App {
             return;
         }
         //sorts the display of the instances based on the mission size (ascending)
+        //if .DS_Store is present, it will be the first element of the array, so we remove it
+        if (listOfFiles[0].getName().equals(".DS_Store")) {
+            listOfFiles = Arrays.copyOfRange(listOfFiles, 1, listOfFiles.length);
+        }
         Arrays.sort(listOfFiles, Comparator.comparingInt(o -> Integer.parseInt(o.getName().split("Missions")[0])));
         int o = 0;
         //check if valid, folder contains centers.csv, distances.csv, missions.csv and employees.csv
@@ -202,7 +206,7 @@ public class App {
             e.printStackTrace();
         }
 
-        // Now but the distance metrix into the right structure with 5 matrix for each
+        // Now but the distance matrix into the right structure with 5 matrix for each
         // day
 
         sessad.distance = new Float[5][][];
