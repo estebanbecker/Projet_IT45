@@ -1,23 +1,17 @@
-package UI;
+package GraphUI.UI;
 
-import Graph.Edge;
-import Graph.Files;
-import Graph.Graph;
-import Graph.Node;
-import PathFinder.Dijkstra;
-import PathFinder.IntFloatList;
+import GraphUI.Graph.Edge;
+import GraphUI.Graph.Graph;
+import GraphUI.Graph.Node;
+import GraphUI.PathFinder.IntFloatList;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
-import App.LaunchUI;
+import GraphUI.App.LaunchUI;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 public class GraphEditor {
@@ -97,7 +91,7 @@ public class GraphEditor {
         } catch (Exception e) {
             System.err.println("Failed to initialize LaF");
         }
-        JFrame frame = new JFrame("Graph Nodes");
+        JFrame frame = new JFrame("GraphUI.Graph Nodes");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(1200, 800);
         frame.setLocationRelativeTo(null);
@@ -354,7 +348,7 @@ public class GraphEditor {
             this.dragged = dragged;
         }
 
-        // Create a Graph Editor method
+        // Create a GraphUI.Graph Editor method
         public void GraphEditor() {
 
             // create a add edge function that uses the graph.connectUnidirectionalNodes()

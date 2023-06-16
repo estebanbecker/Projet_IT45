@@ -1,4 +1,4 @@
-package Graph;
+package GraphUI.Graph;
 
 /**
  * This class is used to store the data of the nodes of a graph.

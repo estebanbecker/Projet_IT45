@@ -1,17 +1,14 @@
 package Problem;
 
-import java.awt.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 import java.util.List;
 
-import App.LaunchUI;
+import GraphUI.App.LaunchUI;
 
-import Benchmark.Benchmark;
 import Solver.AntColony;
 
 public class App {
@@ -42,6 +39,7 @@ public class App {
             System.out.println("No instances found. Exiting the program.");
             return;
         }
+        //sorts the display of the instances based on the mission size (ascending)
         Arrays.sort(listOfFiles, Comparator.comparingInt(o -> Integer.parseInt(o.getName().split("Missions")[0])));
         int o = 0;
         //check if valid, folder contains centers.csv, distances.csv, missions.csv and employees.csv
@@ -52,7 +50,7 @@ public class App {
                 boolean containsDistances = false;
                 boolean containsMissions = false;
                 boolean containsEmployees = false;
-
+                //to be considered a valid instance, the folder must contain the 4 files with the exact names
                 for (File subFile : filesInFolder) {
                     String fileName = subFile.getName();
                     if (fileName.equals("centers.csv") || fileName.equals("Centers.csv") || fileName.equals("centres.csv") || fileName.equals("Centres.csv")) {
@@ -93,7 +91,7 @@ public class App {
         String line;
         String csvSplitBy = ",";
         sessad = new SESSAD();
-
+        //we map the day of the week to the corresponding integer
         String csvFile2 = folder + "Missions.csv";
         List<Mission> Missions = new ArrayList<>();
         Map<Integer, String> dayMapping = new HashMap<>();
@@ -102,6 +100,8 @@ public class App {
         dayMapping.put(3, "Wednesday");
         dayMapping.put(4, "Thursday");
         dayMapping.put(5, "Friday");
+
+        //we parse through the csv file and create a list of missions
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile2))) {
 
             // Read the remaining lines of the file
@@ -117,6 +117,7 @@ public class App {
                 Missions.add(mission);
             }
 
+            //this function gives us the missions ids for the given day of the week
             System.out.println("Missions for monday: " + Mission.getMissionIdsForDay(1, Missions));
             System.out.println("Missions for tuesday: " + Mission.getMissionIdsForDay(2, Missions));
             System.out.println("Missions for wednesday: " + Mission.getMissionIdsForDay(3, Missions));
@@ -124,7 +125,7 @@ public class App {
             System.out.println("Missions for friday: " + Mission.getMissionIdsForDay(5, Missions));
 
             Integer[][] missionarray = Mission.createMissionIndexArrayByDay(Missions);
-
+            /*
             System.out.println("\n");
             for (int i = 0; i < 5; i++) {
                 System.out.print(i + 1 + "\n");
@@ -134,7 +135,7 @@ public class App {
                 }
                 System.out.println();
             }
-
+            */
             sessad.missionPerDay = missionarray;
 
             sessad.mission = Missions.toArray(new Mission[Missions.size()]);
@@ -146,6 +147,7 @@ public class App {
         String csvFile3 = folder + "Employees.csv";
         List<Employee> employees = new ArrayList<>();
 
+        //let's do the same for the employees
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile3))) {
             while ((line = br.readLine()) != null) {
                 String[] employeeData = line.split(csvSplitBy);
@@ -165,6 +167,7 @@ public class App {
 
         String csvFile4 = folder + "centres.csv";
 
+        //let's do the same for the centers
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile4))) {
 
             ArrayList<String> centerNames = new ArrayList<String>();
@@ -184,6 +187,7 @@ public class App {
         // specified
         Float[][] dm = new Float[citiesCount][citiesCount];
 
+        //finally, let's do the same for the distances
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
 
             int i = 0;
@@ -249,7 +253,8 @@ public class App {
             System.out.println("Finished solving in " + elapsedTimeSec + " seconds");
 
             System.out.println("");
-
+            //Old printing of solution
+            /*
             for (int i = 0; i < solution.length; i++) {
                 System.out.print("Employee " + (i + 1) + ": \n");
                 for (int j = 0; j < solution[i].length; j++) {
@@ -260,6 +265,7 @@ public class App {
                 }
                 System.out.println();
             }
+            */
             //Benchmark.main();
             //}
             int maxDays = solution[0].length;
@@ -278,6 +284,7 @@ public class App {
             }
             System.out.println();
 
+            //Solution gets displayed here
             for (int j = 0; j < maxDays; j++) {
                 System.out.println("Day " + (j + 1) + ":");
 
@@ -299,6 +306,7 @@ public class App {
                 System.out.println();
                             
             }
+            //We call the UI once the solution is found, no need to display GUI while solving and consuming resources
             LaunchUI.main();
         } catch (InterruptedException e) {
             e.printStackTrace();

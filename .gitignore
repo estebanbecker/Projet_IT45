@@ -2,6 +2,6 @@
 *.class
 src/Problem/App.java
 instances/200Missions-2centres/benchmark.csv
-src/App/UI.java
+src/GraphUI/App/UI.java
 out/*
 /src/META-INF/*
